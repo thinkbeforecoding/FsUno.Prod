@@ -15,7 +15,7 @@ module Game =
     let create readStream appendToStream =
 
         // this is the "repository"
-        let streamId gameId = sprintf "Game-%d" gameId 
+        let streamId gameId = sprintf "Game-%O" gameId 
         let load gameId =
             let rec fold state version =
                 async {

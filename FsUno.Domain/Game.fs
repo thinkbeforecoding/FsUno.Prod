@@ -2,15 +2,21 @@
 
 open Deck
 
-type GameId = int
-
+[<Struct>]
+type GameId =
+    val id: int
+    new (id) = {id = id}
+    override this.ToString() = string id
+    
 type Command =
     | StartGame of StartGame
     | PlayCard of PlayCard
+
 and StartGame = {
     GameId: GameId
     PlayerCount: int
     FirstCard: Card }
+
 and PlayCard = {
     GameId: GameId
     Player: int

@@ -23,7 +23,7 @@ type EventHandler() =
     member this.Handle =
         function
         | GameStarted event ->
-            printfn "Game %d started with %d players" event.GameId event.PlayerCount
+            printfn "Game %O started with %d players" event.GameId event.PlayerCount
             setColor event.FirstCard
             printfn "First card: %A" event.FirstCard
 
