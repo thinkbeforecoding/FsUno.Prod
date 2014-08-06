@@ -6,7 +6,7 @@ open Deck
 type GameId =
     val id: int
     new (id) = {id = id}
-    override this.ToString() = string id
+    override this.ToString() = string this.id
     
 type Command =
     | StartGame of StartGame
@@ -27,15 +27,23 @@ let gameId =
     function
     | StartGame c -> c.GameId
     | PlayCard c -> c.GameId
-
+    
 type Event =
     | GameStarted of GameStartedEvent
     | CardPlayed of CardPlayedEvent
+    | PlayerPlayedAtWrongTurn of PlayerPlayedAtWrongTurn 
+    
 and GameStartedEvent = {
     GameId: GameId
     PlayerCount: int
     FirstCard: Card }
+
 and CardPlayedEvent = {
+    GameId: GameId
+    Player: int
+    Card: Card }
+
+and PlayerPlayedAtWrongTurn = {
     GameId: GameId
     Player: int
     Card: Card }
@@ -73,14 +81,17 @@ let startGame (command: StartGame) state =
                     FirstCard = command.FirstCard } ]
 
 let playCard (command: PlayCard) state =
-    if state.Player |> Turn.isNot command.Player then invalidOp "Player should play at his turn"
-
-    match command.Card, state.TopCard with
-    | Digit(n1, color1), Digit(n2, color2) when n1 = n2 || color1 = color2 ->
-        [ CardPlayed { GameId = command.GameId
-                       Player = command.Player
-                       Card = command.Card } ]
-    | _ -> invalidOp "Play same color or same value !"
+    if state.Player |> Turn.isNot command.Player then 
+        [ PlayerPlayedAtWrongTurn { GameId = command.GameId
+                                    Player = command.Player
+                                    Card = command.Card } ]
+    else
+        match command.Card, state.TopCard with
+        | Digit(n1, color1), Digit(n2, color2) when n1 = n2 || color1 = color2 ->
+            [ CardPlayed { GameId = command.GameId
+                           Player = command.Player
+                           Card = command.Card } ]
+        | _ -> invalidOp "Play same color or same value !"
 
 // Map commands to aggregates operations
 

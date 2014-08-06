@@ -29,4 +29,4 @@ let ``Different value and color should be rejected``() =
 let ``First player should play at his turn``() =
     Given [ GameStarted { GameId = gameId; PlayerCount = 4; FirstCard = red 3 } ]
     |> When ( PlayCard { GameId = gameId; Player = 2; Card = green 3 } )
-    |> ExpectThrows<InvalidOperationException>
+    |> Expect [ PlayerPlayedAtWrongTurn { GameId = gameId; Player = 2; Card = green 3 }]

@@ -8,15 +8,18 @@ let printCard =
     | Digit(n, color) -> sprintf "%A %O" color n
     | KickBack(color) -> sprintf "%A Kickback" color
     
+let cardPrinter () = printCard
+
 let printEvent =
     function
-    | GameStarted e -> sprintf "Game %O started with %d players. Top Card is %s" e.GameId e.PlayerCount (printCard e.FirstCard)
-    | CardPlayed e -> sprintf "Player %d played %s" e.Player (printCard e.Card)
+    | GameStarted e -> sprintf "Game %O started with %d players. Top Card is %a" e.GameId e.PlayerCount cardPrinter e.FirstCard
+    | CardPlayed e -> sprintf "Player %d played %a" e.Player cardPrinter e.Card
+    | PlayerPlayedAtWrongTurn e -> sprintf "Player %d playerd at wrong turn a %a" e.Player cardPrinter e.Card 
 
 let printCommand  =
     function
-    | StartGame c -> sprintf "Start game %O with %d players. Top card %s" c.GameId c.PlayerCount (printCard c.FirstCard)
-    | PlayCard c -> sprintf "Player %d plays %s" c.Player (printCard c.Card)
+    | StartGame c -> sprintf "Start game %O with %d players. Top card %a" c.GameId c.PlayerCount cardPrinter c.FirstCard
+    | PlayCard c -> sprintf "Player %d plays %a" c.Player cardPrinter c.Card
 
 let printGiven events =
     printfn "Given"

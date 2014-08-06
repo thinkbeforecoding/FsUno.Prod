@@ -30,11 +30,11 @@ let ``Different value and color should be rejected``() =
     |> ExpectThrows<InvalidOperationException>
 
 [<Fact>]
-let ``First player should play at his turn``() =
+let ``Player should play at his turn``() =
     Given [ GameStarted { GameId = gameId; PlayerCount = 4; FirstCard = red 3 } 
             CardPlayed { GameId = gameId; Player = 0; Card = red 9 } ] 
     |> When ( PlayCard { GameId = gameId; Player = 2; Card = green 9 } )                
-    |> ExpectThrows<InvalidOperationException>
+    |> Expect [ PlayerPlayedAtWrongTurn { GameId = gameId; Player = 2; Card = green 9 }]
 
 [<Fact>]
 let ``After a full round it should be player 0 turn``() =
