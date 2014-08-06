@@ -72,6 +72,17 @@ let empty = {
 
 // Operations on the DiscardPile aggregate
 
+let color = function
+    | Digit(_,c) -> c
+    | KickBack c -> c
+
+let sameColor c1 c2 = color c1 = color c2
+let (|SameColor|_|) (c1,c2) = if sameColor c1 c2 then Some (color c1) else None
+let (|SameValue|_|) = function
+    | Digit(n1,_), Digit(n2,_) when n1 = n2 -> Some()
+    | KickBack _, KickBack _ -> Some()
+    | _ -> None
+
 let startGame (command: StartGame) state =
     if command.PlayerCount <= 2 then invalidArg "playerCount" "You should be at least 3 players"
     if state.GameAlreadyStarted then invalidOp "You cannot start game twice"
@@ -87,7 +98,8 @@ let playCard (command: PlayCard) state =
                                     Card = command.Card } ]
     else
         match command.Card, state.TopCard with
-        | Digit(n1, color1), Digit(n2, color2) when n1 = n2 || color1 = color2 ->
+        | SameColor _ 
+        | SameValue ->            
             [ CardPlayed { GameId = command.GameId
                            Player = command.Player
                            Card = command.Card } ]
