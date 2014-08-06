@@ -44,6 +44,15 @@ module private Reflection =
         |> Array.mapi (fun i c -> c.Name, (i,c.PropertyType))
         |> Map.ofArray
 
+    /// Returns all value type containing a single property from
+    /// specified assembly
+    let getValues (assembly: Assembly) =
+        let isStruct (t: Type) = t.IsValueType
+        let hasOneProperty (t: Type) = Array.length (t.GetProperties()) = 1
+        assembly.GetTypes()
+        |> Seq.filter isStruct
+        |> Seq.filter hasOneProperty
+
 // Json function used by converters
 module private Json =    
     let writeObject (w: JsonWriter) (s: JsonSerializer) properties =
@@ -161,14 +170,39 @@ let private optionConverter =
                                 
         member this.CanConvert t = isOption t }
 
+/// Serializes a value type containing a single property
+/// as its inner value. It is used for digit and GameId
+let valueConverter (valueType: Type) =
+    let field =
+        match valueType.GetProperties() with
+        | [| p |] -> p
+        | _ -> invalidArg "valueType" "The type passed to valueConverter should have a single property"
+    let innerType = field.PropertyType
+    let ctor = valueType.GetConstructor [| innerType |]
+    { new JsonConverter() with
+        member this.WriteJson(w,v,s) =
+            s.Serialize(w, field.GetValue(v))
+        member this.ReadJson(r,t,v,s) =
+            ctor.Invoke([| s.Deserialize(r, innerType) |])
+        member this.CanConvert t = t = valueType }
+
+let converters =
+    let valueConverters =
+        getValues typeof<Game.GameId>.Assembly
+        |> Seq.map valueConverter
+        |> Seq.toList
+    [ unionConverter;optionConverter]
+    @ valueConverters
+
 let deserializeUnion<'a> eventType data = 
     FSharpType.GetUnionCases(typeof<'a>)
     |> Array.tryFind (fun c -> c.Name = eventType)
     |> function
        | Some case ->  
             let serializer = new JsonSerializer()
-            [rootUnionConverter<'a> case; unionConverter;optionConverter ]
+            rootUnionConverter<'a> case :: converters
             |> List.iter serializer.Converters.Add
+            
             use stream = new IO.MemoryStream(data: byte[])
             use reader = new JsonTextReader(new IO.StreamReader(stream))
             serializer.Deserialize<'a>(reader)
@@ -178,7 +212,7 @@ let deserializeUnion<'a> eventType data =
 let serializeUnion (o:'a)  =
     let case,_ = FSharpValue.GetUnionFields(o, typeof<'a>)
     let serializer = new JsonSerializer()
-    [rootUnionConverter<'a> case; unionConverter;optionConverter ]
+    rootUnionConverter<'a> case :: converters
     |> List.iter serializer.Converters.Add
     use stream = new IO.MemoryStream()
     use writer = new IO.StreamWriter(stream)

@@ -45,6 +45,10 @@
     <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="NHamcrest">
       <HintPath>..\packages\FsUnit.xUnit.1.3.0.1\Lib\net40\NHamcrest.dll</HintPath>
       <Private>True</Private>
@@ -61,10 +65,11 @@
     <Compile Include="PrettyPrint.fs" />
     <Compile Include="Specification.fs" />
     <Compile Include="Builders.fs" />
-    <Compile Include="When building a digit.fs" />
     <Compile Include="When starting game.fs" />
     <Compile Include="When playing card.fs" />
     <Compile Include="When playing a second turn.fs" />
+    <Compile Include="When building a digit.fs" />
+    <Compile Include="When serializing value.fs" />
     <None Include="packages.config" />
     <None Include="app.config" />
   </ItemGroup>
@@ -72,6 +77,11 @@
     <ProjectReference Include="..\FsUno.Domain\FsUno.Domain.fsproj">
       <Name>FsUno.Domain</Name>
       <Project>{8f9b7e8e-6591-40db-b806-c16f9b1927a8}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\FsUno.Persistance.EventStore\FsUno.Persistance.EventStore.fsproj">
+      <Name>FsUno.Persistance.EventStore</Name>
+      <Project>{28596456-a726-4405-9687-5d37d909db36}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
