@@ -60,6 +60,8 @@
   <ItemGroup>
     <Compile Include="PrettyPrint.fs" />
     <Compile Include="Specification.fs" />
+    <Compile Include="Builders.fs" />
+    <Compile Include="When building a digit.fs" />
     <Compile Include="When starting game.fs" />
     <Compile Include="When playing card.fs" />
     <Compile Include="When playing a second turn.fs" />

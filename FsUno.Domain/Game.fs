@@ -54,7 +54,7 @@ type State = {
 let empty = {
     GameAlreadyStarted = false
     Player = Turn.empty
-    TopCard = Digit(0,Red) }
+    TopCard = Digit(digit 0,Red) }
 
 // Operations on the DiscardPile aggregate
 

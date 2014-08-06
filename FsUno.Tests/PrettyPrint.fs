@@ -5,7 +5,7 @@ open Game
 
 let printCard =
     function
-    | Digit(n, color) -> sprintf "%A %d" color n
+    | Digit(n, color) -> sprintf "%A %O" color n
     | KickBack(color) -> sprintf "%A Kickback" color
     
 let printEvent =
