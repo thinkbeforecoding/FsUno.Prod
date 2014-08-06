@@ -20,6 +20,13 @@ type EventHandler() =
                | None -> ConsoleColor.White
         Console.ForegroundColor <- color
     
+    let printCard = function
+        | Digit(n,c) -> sprintf "%A %d" c n.value 
+        | KickBack c -> sprintf "%A kickback" c
+
+    let printer f (w:IO.TextWriter) v = w.Write(f v : string)
+    let cardPrinter = printer printCard
+
     member this.Handle =
         function
         | GameStarted event ->
@@ -31,5 +38,7 @@ type EventHandler() =
             turnCount <- turnCount + 1
             setColor event.Card
             printfn "[%d] Player %d played %A" turnCount event.Player event.Card
-
+        | PlayerPlayedAtWrongTurn event ->
+            Console.ForegroundColor <- ConsoleColor.DarkRed
+            printfn "[%d] Player %d played at wrong turn a %a" turnCount event.Player cardPrinter event.Card
 
