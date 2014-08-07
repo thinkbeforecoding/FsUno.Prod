@@ -22,6 +22,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <DocumentationFile>bin\Debug\FsUno.Tests.XML</DocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -68,8 +70,10 @@
     <Compile Include="When starting game.fs" />
     <Compile Include="When playing card.fs" />
     <Compile Include="When playing a second turn.fs" />
+    <Compile Include="When playing a kickback.fs" />
     <Compile Include="When building a digit.fs" />
     <Compile Include="When serializing value.fs" />
+    <Compile Include="When passing to next turn.fs" />
     <None Include="packages.config" />
     <None Include="app.config" />
   </ItemGroup>

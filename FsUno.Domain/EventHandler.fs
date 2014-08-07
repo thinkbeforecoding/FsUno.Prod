@@ -19,6 +19,7 @@ type EventHandler() =
                | Some Yellow -> ConsoleColor.Yellow
                | None -> ConsoleColor.White
         Console.ForegroundColor <- color
+
     
     let printCard = function
         | Digit(n,c) -> sprintf "%A %d" c n.value 
@@ -41,4 +42,5 @@ type EventHandler() =
         | PlayerPlayedAtWrongTurn event ->
             Console.ForegroundColor <- ConsoleColor.DarkRed
             printfn "[%d] Player %d played at wrong turn a %a" turnCount event.Player cardPrinter event.Card
-
+        | DirectionChanged event ->
+            printfn "     Direction changed. Playing now %A" event.Direction

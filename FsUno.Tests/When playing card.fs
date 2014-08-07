@@ -11,13 +11,13 @@ let gameId = GameId 1
 let ``Same color should be accepted``() =
     Given [ GameStarted { GameId = gameId; PlayerCount = 4; FirstCard = red 3 } ]
     |> When ( PlayCard { GameId = gameId; Player = 0; Card = red 9 } )
-    |> Expect [ CardPlayed { GameId = gameId; Player = 0; Card = red 9 } ]
+    |> Expect [ CardPlayed { GameId = gameId; Player = 0; Card = red 9; NextPlayer = 1 } ]
 
 [<Fact>]
 let ``Same value should be accepted``() =
     Given [ GameStarted { GameId = gameId; PlayerCount = 4; FirstCard = red 3 } ]
     |> When ( PlayCard { GameId = gameId; Player = 0; Card = yellow 3 } )
-    |> Expect [ CardPlayed { GameId = gameId; Player = 0; Card = yellow 3 } ]
+    |> Expect [ CardPlayed { GameId = gameId; Player = 0; Card = yellow 3; NextPlayer = 1 } ]
 
 [<Fact>]
 let ``Different value and color should be rejected``() =

@@ -15,6 +15,7 @@ let printEvent =
     | GameStarted e -> sprintf "Game %O started with %d players. Top Card is %a" e.GameId e.PlayerCount cardPrinter e.FirstCard
     | CardPlayed e -> sprintf "Player %d played %a" e.Player cardPrinter e.Card
     | PlayerPlayedAtWrongTurn e -> sprintf "Player %d playerd at wrong turn a %a" e.Player cardPrinter e.Card 
+    | DirectionChanged e -> sprintf "Game direction changed to %A" e.Direction
 
 let printCommand  =
     function

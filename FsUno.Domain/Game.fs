@@ -32,6 +32,7 @@ type Event =
     | GameStarted of GameStartedEvent
     | CardPlayed of CardPlayedEvent
     | PlayerPlayedAtWrongTurn of PlayerPlayedAtWrongTurn 
+    | DirectionChanged of DirectionChanged
     
 and GameStartedEvent = {
     GameId: GameId
@@ -41,12 +42,18 @@ and GameStartedEvent = {
 and CardPlayedEvent = {
     GameId: GameId
     Player: int
-    Card: Card }
+    Card: Card
+    NextPlayer: int }
 
 and PlayerPlayedAtWrongTurn = {
     GameId: GameId
     Player: int
     Card: Card }
+
+and DirectionChanged = {
+    GameId: GameId
+    Direction: Direction }
+
 
 // A type representing current player turn
 // All operation should be done inside the module
@@ -57,18 +64,38 @@ type Turn = (*player*)int * (*playerCount*)int
 module Turn =
     let empty = (0,1)
     let start count = (0, count)
-    let next (player, count) = (player + 1) % count, count
+
+    let next direction (player, count) = 
+        match direction with
+        | ClockWise -> (player + 1) % count, count
+        | CounterClockWise -> (player + count - 1) % count, count  // the + count is here to avoid having negative result
+
     let isNot p (current, _) = p <> current
+
+    let set player (_, count) =
+        if player < 0 || player >= count then 
+            invalidArg "player" "The player value should be between 0 and player count"
+        player, count
+
+    let player (current, _) = current
+
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module Direction =
+    let reverse = function
+        | ClockWise -> CounterClockWise
+        | CounterClockWise -> ClockWise
 
 type State = {
     GameAlreadyStarted: bool
     Player: Turn
-    TopCard: Card }
+    TopCard: Card 
+    Direction: Direction}
 
 let empty = {
     GameAlreadyStarted = false
     Player = Turn.empty
-    TopCard = Digit(digit 0,Red) }
+    TopCard = Digit(digit 0,Red) 
+    Direction = ClockWise}
 
 // Operations on the DiscardPile aggregate
 
@@ -99,10 +126,31 @@ let playCard (command: PlayCard) state =
     else
         match command.Card, state.TopCard with
         | SameColor _ 
-        | SameValue ->            
-            [ CardPlayed { GameId = command.GameId
-                           Player = command.Player
-                           Card = command.Card } ]
+        | SameValue ->
+            let cardPlayed nextPlayer = 
+                CardPlayed { GameId = command.GameId
+                             Player = command.Player
+                             Card = command.Card 
+                             NextPlayer = nextPlayer}
+              
+            match command.Card with
+            | KickBack _ ->
+                let newDirection = Direction.reverse state.Direction
+                let nextPlayer = 
+                    state.Player 
+                    |> Turn.next newDirection
+                    |> Turn.player
+
+                [ cardPlayed nextPlayer
+                  DirectionChanged { GameId = command.GameId
+                                     Direction = newDirection } ]
+            | _ -> 
+                let nextPlayer =
+                    state.Player
+                    |> Turn.next state.Direction
+                    |> Turn.player
+                [ cardPlayed nextPlayer ]
+        
         | _ -> invalidOp "Play same color or same value !"
 
 // Map commands to aggregates operations
@@ -132,12 +180,17 @@ let apply state =
     | GameStarted event -> 
         { GameAlreadyStarted = true
           Player = Turn.start event.PlayerCount
-          TopCard = event.FirstCard }
+          TopCard = event.FirstCard 
+          Direction = ClockWise }
 
     | CardPlayed event ->
         { state with
-            Player = state.Player |> Turn.next 
+            Player = state.Player |> Turn.set event.NextPlayer
             TopCard = event.Card }
+    | DirectionChanged event ->
+        { state with
+            Direction = event.Direction}
+    | PlayerPlayedAtWrongTurn _ -> state 
 
 // Replays all events from start to get current state
 
