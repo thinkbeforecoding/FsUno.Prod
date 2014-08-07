@@ -1,4 +1,4 @@
-﻿module Deck
+﻿module FsUno.Domain.Deck
 
 [<Struct>]
 type Digit =
@@ -24,5 +24,3 @@ type Card =
 type Direction =
     | ClockWise
     | CounterClockWise
-
-

@@ -1,9 +1,10 @@
-﻿module Specifications
+﻿module FsUno.Tests.Specifications
 
-
-open FsUnit.Xunit
+open FsUno.Domain
 open Game
+
 open PrettyPrint
+open FsUnit.Xunit
 
 let Given (events: Event list) = events
 let When (command: Command) events = events, command
@@ -27,4 +28,3 @@ let ExpectThrows<'Ex> (events, command) =
         |> handle command
         |> ignore)
     |> should throw typeof<'Ex>
-

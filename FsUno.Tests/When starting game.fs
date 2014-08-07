@@ -1,10 +1,12 @@
 ﻿module FsUno.Tests.``When starting game``
 
-open Xunit
-open System
-open Specifications
+open FsUno.Domain
 open Deck
 open Game
+
+open Specifications
+open System
+open Xunit
 
 let gameId = GameId 1
 

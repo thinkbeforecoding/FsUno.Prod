@@ -1,17 +1,18 @@
-﻿module ``When serializing value``
+﻿module FsUno.Tests.``When serializing value``
 
-open Xunit
-open FsUnit.Xunit
-open Game
+open FsUno.Domain.Game
+
 open Serialization
+
+open FsUnit.Xunit
 open Newtonsoft.Json
 open System.IO
+open Xunit
 
 let createSerializer converters =
     let serializer = JsonSerializer()
     converters |> List.iter serializer.Converters.Add
     serializer
-
 
 let serialize converters o = 
     let serializer = createSerializer converters

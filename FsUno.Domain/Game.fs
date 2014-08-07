@@ -1,4 +1,4 @@
-﻿module Game
+﻿module FsUno.Domain.Game
 
 open Deck
 
@@ -23,8 +23,7 @@ and PlayCard = {
     Card: Card }
 
 
-let gameId =
-    function
+let gameId = function
     | StartGame c -> c.GameId
     | PlayCard c -> c.GameId
     
@@ -79,7 +78,6 @@ module Turn =
 
     let player (current, _) = current
 
-[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Direction =
     let reverse = function
         | ClockWise -> CounterClockWise
@@ -97,7 +95,7 @@ let empty = {
     TopCard = Digit(digit 0,Red) 
     Direction = ClockWise}
 
-// Operations on the DiscardPile aggregate
+// Operations on the Game aggregate
 
 let color = function
     | Digit(_,c) -> c
@@ -111,8 +109,8 @@ let (|SameValue|_|) = function
     | _ -> None
 
 let startGame (command: StartGame) state =
-    if command.PlayerCount <= 2 then invalidArg "playerCount" "You should be at least 3 players"
-    if state.GameAlreadyStarted then invalidOp "You cannot start game twice"
+    if command.PlayerCount <= 2 then invalidArg "playerCount" "There should be at least 3 players"
+    if state.GameAlreadyStarted then invalidOp "The game cannot be started more than once"
 
     [ GameStarted { GameId = command.GameId
                     PlayerCount = command.PlayerCount
@@ -155,34 +153,18 @@ let playCard (command: PlayCard) state =
 
 // Map commands to aggregates operations
 
-let handle =
-    function
+let handle = function
     | StartGame command -> startGame command
     | PlayCard command -> playCard command
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Applies state changes for events
 
-let apply state =
-    function
+let apply state = function
     | GameStarted event -> 
         { GameAlreadyStarted = true
           Player = Turn.start event.PlayerCount
           TopCard = event.FirstCard 
           Direction = ClockWise }
-
     | CardPlayed event ->
         { state with
             Player = state.Player |> Turn.set event.NextPlayer
@@ -195,5 +177,3 @@ let apply state =
 // Replays all events from start to get current state
 
 let replay events = List.fold apply empty events
-
-

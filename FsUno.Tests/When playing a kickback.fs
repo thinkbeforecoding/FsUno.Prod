@@ -1,10 +1,11 @@
-﻿module ``When playing a kickback``
+﻿module FsUno.Tests.``When playing a kickback``
 
-open Xunit
-open FsUnit.Xunit
-open Specifications
+open FsUno.Domain
 open Deck
 open Game
+
+open Specifications
+open Xunit
 
 let gameId = GameId 1
 

@@ -1,9 +1,11 @@
-﻿module ``When passing to next turn``
+﻿module FsUno.Tests.``When passing to next turn``
 
-open Xunit
-open FsUnit.Xunit
+open FsUno.Domain
 open Deck
 open Game
+
+open FsUnit.Xunit
+open Xunit
 
 [<Fact>]
 let ``clockwise should be next one``() =
