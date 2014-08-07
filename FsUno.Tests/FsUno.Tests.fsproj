@@ -83,8 +83,8 @@
       <Project>{8f9b7e8e-6591-40db-b806-c16f9b1927a8}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\FsUno.Persistance.EventStore\FsUno.Persistance.EventStore.fsproj">
-      <Name>FsUno.Persistance.EventStore</Name>
+    <ProjectReference Include="..\FsUno.Persistance.EventStore\FsUno.Persistence.EventStore.fsproj">
+      <Name>FsUno.Persistence.EventStore</Name>
       <Project>{28596456-a726-4405-9687-5d37d909db36}</Project>
       <Private>True</Private>
     </ProjectReference>
