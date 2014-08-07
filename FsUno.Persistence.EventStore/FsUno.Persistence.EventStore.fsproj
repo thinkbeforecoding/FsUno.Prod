@@ -8,7 +8,7 @@
     <ProjectGuid>28596456-a726-4405-9687-5d37d909db36</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>FsUno.Persistance.EventStore</RootNamespace>
-    <AssemblyName>FsUno.Persistance.EventStore</AssemblyName>
+    <AssemblyName>FsUno.Persistence.EventStore</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.3.1.0</TargetFSharpCoreVersion>
     <Name>FsUno.Persistence.EventStore</Name>
