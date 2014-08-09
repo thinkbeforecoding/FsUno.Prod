@@ -116,9 +116,14 @@ let startGame (command: StartGame) state =
     if command.PlayerCount <= 2 then invalidArg "playerCount" "There should be at least 3 players"
     if state.GameAlreadyStarted then invalidOp "The game cannot be started more than once"
 
-    [ GameStarted { GameId = command.GameId
-                    PlayerCount = command.PlayerCount
-                    FirstCard = command.FirstCard } ]
+    [ yield GameStarted { GameId = command.GameId
+                          PlayerCount = command.PlayerCount
+                          FirstCard = command.FirstCard }
+      match command.FirstCard with
+      | KickBack _ ->
+        yield DirectionChanged { GameId = command.GameId 
+                                 Direction = CounterClockWise }
+      | _ -> () ]
 
 let playCard (command: PlayCard) state =
     if state.Player |> Turn.isNot command.Player then 

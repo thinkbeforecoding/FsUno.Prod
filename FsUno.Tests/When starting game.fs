@@ -28,3 +28,10 @@ let ``Game should not be started twice``() =
     Given [GameStarted { GameId = gameId; PlayerCount = 4; FirstCard = red 3 } ]
     |> When ( StartGame { GameId = gameId; PlayerCount = 4; FirstCard = red 2 } )
     |> ExpectThrows<InvalidOperationException>
+
+[<Fact>]
+let ``Starting with a kickback should change direction``() =
+    Given []
+    |> When ( StartGame { GameId = gameId; PlayerCount = 4; FirstCard = KickBack Yellow })
+    |> Expect [ GameStarted { GameId = gameId; PlayerCount = 4; FirstCard = KickBack Yellow}
+                DirectionChanged { GameId = gameId; Direction = CounterClockWise } ]
