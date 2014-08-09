@@ -1,6 +1,7 @@
 ﻿[<AutoOpen>]
-module Builders
+module FsUno.Tests.Builders
 
+open FsUno.Domain
 open Deck
 
 let red n = Digit(digit n, Red)

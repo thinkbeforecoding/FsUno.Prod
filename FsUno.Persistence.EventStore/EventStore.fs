@@ -1,7 +1,7 @@
 ﻿module EventStore
 
 open System
-open Game
+open FsUno.Domain.Game
 
 // This module implements AwaitTask for non generic Task
 // It should be useless in F# 4 since it should be implemented in FSharp.Core
@@ -80,6 +80,3 @@ let appendToStream (store: IEventStoreConnection) streamId expectedVersion newEv
         let serializedEvents = [| for event in newEvents -> serialize event |]
 
         do! store.AsyncAppendToStream streamId expectedVersion serializedEvents }
-
-
-
