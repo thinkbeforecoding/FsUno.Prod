@@ -4,6 +4,7 @@ open FsUno.Domain
 open Deck
 open Game
 
+open System
 open FsUnit.Xunit
 open Xunit
 
@@ -36,6 +37,7 @@ let ``revesing twice should bring back clockwise order``() =
         |> Turn.reverse
     turn.Direction |> should equal ClockWise 
 
+        
 [<Fact>]
 let ``counterclockwise should be previous one``() =
     let turn =
@@ -43,3 +45,14 @@ let ``counterclockwise should be previous one``() =
         |> Turn.reverse
         |> Turn.next
     turn.Player|> should equal 3
+
+[<Fact>]
+let ``setting turn to negative value should fail``() =
+    (fun () -> Turn.start 1 4 |> Turn.set -1 |> ignore)
+    |> should throw typeof<ArgumentException>
+
+
+[<Fact>]
+let ``setting turn to number of player should fail``() =
+    (fun () -> Turn.start 1 4 |> Turn.set 4 |> ignore)
+    |> should throw typeof<ArgumentException>
