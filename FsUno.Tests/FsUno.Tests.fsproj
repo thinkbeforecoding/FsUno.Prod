@@ -71,6 +71,7 @@
     <Compile Include="When playing card.fs" />
     <Compile Include="When playing a second turn.fs" />
     <Compile Include="When playing a kickback.fs" />
+    <Compile Include="When playing after a player who failed.fs" />
     <Compile Include="When playing a skip card.fs" />
     <Compile Include="When building a digit.fs" />
     <Compile Include="When serializing value.fs" />
