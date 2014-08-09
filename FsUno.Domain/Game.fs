@@ -64,42 +64,39 @@ type Turn = {
     Player: int
     PlayerCount:int
     Direction:Direction }
-        
+    with
+    static member empty = { Player= 0; PlayerCount = 1; Direction = ClockWise }
+    static member start player count = {Player = player; PlayerCount = count; Direction = ClockWise }
 
-[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
-module Turn =
-    let empty = { Player= 0; PlayerCount = 1; Direction = ClockWise }
-    let start player count = {Player = player; PlayerCount = count; Direction = ClockWise }
-
-    let next turn = 
+    member turn.next = 
         match turn.Direction with
         | ClockWise ->  { turn with Player = (turn.Player + 1) % turn.PlayerCount }
         | CounterClockWise -> { turn with Player = (turn.Player + turn.PlayerCount - 1) % turn.PlayerCount } // the + count is here to avoid having negative result
 
-    let skip = next >> next
+    member turn.skip = turn.next.next
 
-    let reverse = function
-        | { Turn.Direction = ClockWise } as turn -> { turn with Direction = CounterClockWise }
-        | { Direction = CounterClockWise} as turn -> { turn with Direction = ClockWise }
+    member turn.reverse = 
+        match turn.Direction with
+        | ClockWise -> { turn with Direction = CounterClockWise }
+        | CounterClockWise -> { turn with Direction = ClockWise }
 
-    let isNot p turn = p <> turn.Player
-
-    let set player turn  =
+    member turn.setPlayer player =
         if player < 0 || player >= turn.PlayerCount then 
             invalidArg "player" "The player value should be between 0 and player count"
         { turn with Player = player }
 
-    let setDirection direction turn =
+    member turn.setDirection direction =
         { turn with Turn.Direction = direction }
+        
 
 type State = {
     GameAlreadyStarted: bool
-    Player: Turn
+    Turn: Turn
     TopCard: Card }
 
 let empty = {
     GameAlreadyStarted = false
-    Player = Turn.empty
+    Turn = Turn.empty
     TopCard = Digit(digit 0,Red) }
 
 // Operations on the Game aggregate
@@ -134,7 +131,7 @@ let startGame (command: StartGame) state =
     | _ -> [ gameStarted 0]
 
 let playCard (command: PlayCard) state =
-    if state.Player |> Turn.isNot command.Player then 
+    if state.Turn.Player <> command.Player then 
         [ PlayerPlayedAtWrongTurn { GameId = command.GameId
                                     Player = command.Player
                                     Card = command.Card } ]
@@ -151,17 +148,17 @@ let playCard (command: PlayCard) state =
             match command.Card with
             | KickBack _ ->
 
-                let nextTurn = state.Player |> Turn.reverse |> Turn.next
+                let nextTurn = state.Turn.reverse.next
 
                 [ cardPlayed nextTurn.Player
                   DirectionChanged { GameId = command.GameId
                                      Direction = nextTurn.Direction } ]
             | Skip _ ->
-                let nextTurn = state.Player |> Turn.skip
+                let nextTurn = state.Turn.skip
 
                 [ cardPlayed nextTurn.Player ]
             | _ -> 
-                let nextTurn = state.Player |> Turn.next
+                let nextTurn = state.Turn.next
                 [ cardPlayed nextTurn.Player ]
         
         | _ -> [ PlayerPlayedWrongCard { GameId = command.GameId; Player = command.Player; Card = command.Card} ] 
@@ -177,15 +174,15 @@ let handle = function
 let apply state = function
     | GameStarted event -> 
         { GameAlreadyStarted = true
-          Player = Turn.start event.FirstPlayer event.PlayerCount 
+          Turn = Turn.start event.FirstPlayer event.PlayerCount 
           TopCard = event.FirstCard }
     | CardPlayed event ->
         { state with
-            Player = state.Player |> Turn.set event.NextPlayer
+            Turn = state.Turn.setPlayer event.NextPlayer
             TopCard = event.Card }
     | DirectionChanged event ->
         { state with 
-            Player = state.Player |> Turn.setDirection event.Direction }
+            Turn = state.Turn.setDirection event.Direction }
     | PlayerPlayedAtWrongTurn _
     | PlayerPlayedWrongCard _ -> state 
 
