@@ -60,45 +60,47 @@ and DirectionChanged = {
 // A type representing current player turn
 // All operation should be done inside the module
 
-type Turn = (*player*)int * (*playerCount*)int
+type Turn = { 
+    Player: int
+    PlayerCount:int
+    Direction:Direction }
+        
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Turn =
-    let empty = (0,1)
-    let start player count = (player, count)
+    let empty = { Player= 0; PlayerCount = 1; Direction = ClockWise }
+    let start player count = {Player = player; PlayerCount = count; Direction = ClockWise }
 
-    let next direction (player, count) = 
-        match direction with
-        | ClockWise -> (player + 1) % count, count
-        | CounterClockWise -> (player + count - 1) % count, count  // the + count is here to avoid having negative result
+    let next turn = 
+        match turn.Direction with
+        | ClockWise ->  { turn with Player = (turn.Player + 1) % turn.PlayerCount }
+        | CounterClockWise -> { turn with Player = (turn.Player + turn.PlayerCount - 1) % turn.PlayerCount } // the + count is here to avoid having negative result
 
-    let skip direction = next direction >> next direction
+    let skip = next >> next
 
-    let isNot p (current, _) = p <> current
-
-    let set player (_, count) =
-        if player < 0 || player >= count then 
-            invalidArg "player" "The player value should be between 0 and player count"
-        player, count
-
-    let player (current, _) = current
-
-module Direction =
     let reverse = function
-        | ClockWise -> CounterClockWise
-        | CounterClockWise -> ClockWise
+        | { Turn.Direction = ClockWise } as turn -> { turn with Direction = CounterClockWise }
+        | { Direction = CounterClockWise} as turn -> { turn with Direction = ClockWise }
+
+    let isNot p turn = p <> turn.Player
+
+    let set player turn  =
+        if player < 0 || player >= turn.PlayerCount then 
+            invalidArg "player" "The player value should be between 0 and player count"
+        { turn with Player = player }
+
+    let setDirection direction turn =
+        { turn with Turn.Direction = direction }
 
 type State = {
     GameAlreadyStarted: bool
     Player: Turn
-    TopCard: Card 
-    Direction: Direction}
+    TopCard: Card }
 
 let empty = {
     GameAlreadyStarted = false
     Player = Turn.empty
-    TopCard = Digit(digit 0,Red) 
-    Direction = ClockWise}
+    TopCard = Digit(digit 0,Red) }
 
 // Operations on the Game aggregate
 
@@ -127,10 +129,8 @@ let startGame (command: StartGame) state =
     match command.FirstCard with
     | KickBack _ ->
         [ gameStarted 0 
-          DirectionChanged { GameId = command.GameId 
-                             Direction = CounterClockWise } ]
+          DirectionChanged { GameId = command.GameId; Direction = CounterClockWise } ]
     | Skip _ -> [ gameStarted 1 ]
-
     | _ -> [ gameStarted 0]
 
 let playCard (command: PlayCard) state =
@@ -150,28 +150,19 @@ let playCard (command: PlayCard) state =
               
             match command.Card with
             | KickBack _ ->
-                let newDirection = Direction.reverse state.Direction
-                let nextPlayer = 
-                    state.Player 
-                    |> Turn.next newDirection
-                    |> Turn.player
 
-                [ cardPlayed nextPlayer
+                let nextTurn = state.Player |> Turn.reverse |> Turn.next
+
+                [ cardPlayed nextTurn.Player
                   DirectionChanged { GameId = command.GameId
-                                     Direction = newDirection } ]
+                                     Direction = nextTurn.Direction } ]
             | Skip _ ->
-                let nextPlayer =
-                    state.Player
-                    |> Turn.skip state.Direction
-                    |> Turn.player
+                let nextTurn = state.Player |> Turn.skip
 
-                [ cardPlayed nextPlayer ]
+                [ cardPlayed nextTurn.Player ]
             | _ -> 
-                let nextPlayer =
-                    state.Player
-                    |> Turn.next state.Direction
-                    |> Turn.player
-                [ cardPlayed nextPlayer ]
+                let nextTurn = state.Player |> Turn.next
+                [ cardPlayed nextTurn.Player ]
         
         | _ -> [ PlayerPlayedWrongCard { GameId = command.GameId; Player = command.Player; Card = command.Card} ] 
 
@@ -187,15 +178,14 @@ let apply state = function
     | GameStarted event -> 
         { GameAlreadyStarted = true
           Player = Turn.start event.FirstPlayer event.PlayerCount 
-          TopCard = event.FirstCard 
-          Direction = ClockWise }
+          TopCard = event.FirstCard }
     | CardPlayed event ->
         { state with
             Player = state.Player |> Turn.set event.NextPlayer
             TopCard = event.Card }
     | DirectionChanged event ->
-        { state with
-            Direction = event.Direction}
+        { state with 
+            Player = state.Player |> Turn.setDirection event.Direction }
     | PlayerPlayedAtWrongTurn _
     | PlayerPlayedWrongCard _ -> state 
 
