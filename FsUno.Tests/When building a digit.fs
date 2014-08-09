@@ -1,9 +1,11 @@
-﻿module ``When building a digit``
+﻿module FsUno.Tests.``When building a digit``
 
+open FsUno.Domain
+open Deck
+
+open FsUnit.Xunit
 open System
 open Xunit
-open FsUnit.Xunit
-open Deck
 
 [<Fact>]
 let ``0 should be constructable``() =

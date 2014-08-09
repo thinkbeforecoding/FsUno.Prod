@@ -1,8 +1,9 @@
-﻿namespace FsUno
+﻿namespace FsUno.Domain
 
-open System
 open Deck
 open Game
+
+open System
 
 type EventHandler() =
     let mutable turnCount = 0
@@ -30,13 +31,11 @@ type EventHandler() =
     let printer f (w:IO.TextWriter) v = w.Write(f v : string)
     let cardPrinter = printer printCard
 
-    member this.Handle =
-        function
+    member this.Handle = function
         | GameStarted event ->
             printfn "Game %O started with %d players" event.GameId event.PlayerCount
             setColor event.FirstCard
             printfn "First card: %A" event.FirstCard
-
         | CardPlayed event ->
             turnCount <- turnCount + 1
             setColor event.Card

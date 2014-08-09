@@ -1,4 +1,4 @@
-﻿module CommandHandlers
+﻿module FsUno.Domain.CommandHandlers
 
 open Game
 
@@ -10,7 +10,6 @@ open Game
 // then simply maintain state and save new events to the store.
 // This is usually ok for aggregates with a small number of events
 module Game =
-
     type Agent<'T> = MailboxProcessor<'T>
     let create readStream appendToStream =
 
@@ -66,4 +65,3 @@ module Game =
 
         fun command -> 
             dispatcher.Post command
-        

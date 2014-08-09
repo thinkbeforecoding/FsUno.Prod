@@ -1,12 +1,15 @@
 ﻿module FsUno.Tests.``When playing card``
 
-open Xunit
-open System
-open Specifications
+open FsUno.Domain
 open Deck
 open Game
 
+open Specifications
+open System
+open Xunit
+
 let gameId = GameId 1
+
 [<Fact>]
 let ``Same color should be accepted``() =
     Given [ GameStarted { GameId = gameId; PlayerCount = 4; FirstCard = red 3 } ]

@@ -1,7 +1,6 @@
-﻿open FsUno
+﻿open FsUno.Domain
+
 open CommandHandlers
-
-
 open Deck
 open Game
 open EventStore

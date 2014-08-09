@@ -1,5 +1,7 @@
 ﻿module Serialization
 
+open FsUno.Domain
+
 // This module provides Json serialization to store
 // events in the event store 
 
@@ -85,7 +87,6 @@ module private Json =
         name
 
     let deserializeUnion (r: JsonReader) (s:JsonSerializer) getCase =
-
         if r.TokenType = JsonToken.StartObject then
             read r
             let case = getCase r true
@@ -219,5 +220,3 @@ let serializeUnion (o:'a)  =
     serializer.Serialize(writer, o)
     writer.Flush()
     case.Name, stream.ToArray()
-
-
