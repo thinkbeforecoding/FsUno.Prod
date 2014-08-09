@@ -11,7 +11,7 @@ let gameId = GameId 1
 
 [<Fact>]
 let ``it should change game direction``() =
-    Given [ GameStarted { GameId = gameId; PlayerCount = 4; FirstCard = red 8 }
+    Given [ GameStarted { GameId = gameId; PlayerCount = 4; FirstCard = red 8; FirstPlayer = 0 }
             CardPlayed { GameId = gameId; Player = 0; Card = green 8; NextPlayer = 1 } ]
     |> When (PlayCard { GameId = gameId; Player = 1; Card = KickBack Green}  )
     |> Expect [ CardPlayed { GameId = gameId; Player = 1; Card = KickBack Green; NextPlayer = 0}
@@ -19,7 +19,7 @@ let ``it should change game direction``() =
 
 [<Fact>]
 let ``after a game change, it should change game direction again``() =
-    Given [ GameStarted { GameId = gameId; PlayerCount = 4; FirstCard = red 8 }
+    Given [ GameStarted { GameId = gameId; PlayerCount = 4; FirstCard = red 8; FirstPlayer = 0 }
             CardPlayed { GameId = gameId; Player = 0; Card = green 8; NextPlayer = 1 }
             CardPlayed { GameId = gameId; Player = 1; Card = KickBack Green; NextPlayer = 0}
             DirectionChanged { GameId = gameId; Direction = CounterClockWise }  ]

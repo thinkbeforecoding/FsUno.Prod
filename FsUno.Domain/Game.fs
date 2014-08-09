@@ -37,7 +37,9 @@ type Event =
 and GameStartedEvent = {
     GameId: GameId
     PlayerCount: int
-    FirstCard: Card }
+    FirstCard: Card 
+    FirstPlayer: int }
+
 
 and CardPlayedEvent = {
     GameId: GameId
@@ -63,7 +65,7 @@ type Turn = (*player*)int * (*playerCount*)int
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Turn =
     let empty = (0,1)
-    let start count = (0, count)
+    let start player count = (player, count)
 
     let next direction (player, count) = 
         match direction with
@@ -115,15 +117,21 @@ let (|SameValue|_|) = function
 let startGame (command: StartGame) state =
     if command.PlayerCount <= 2 then invalidArg "playerCount" "There should be at least 3 players"
     if state.GameAlreadyStarted then invalidOp "The game cannot be started more than once"
+    
+    let gameStarted firstPlayer = 
+        GameStarted { GameId = command.GameId
+                      PlayerCount = command.PlayerCount
+                      FirstCard = command.FirstCard
+                      FirstPlayer = firstPlayer }
+ 
+    match command.FirstCard with
+    | KickBack _ ->
+        [ gameStarted 0 
+          DirectionChanged { GameId = command.GameId 
+                             Direction = CounterClockWise } ]
+    | Skip _ -> [ gameStarted 1 ]
 
-    [ yield GameStarted { GameId = command.GameId
-                          PlayerCount = command.PlayerCount
-                          FirstCard = command.FirstCard }
-      match command.FirstCard with
-      | KickBack _ ->
-        yield DirectionChanged { GameId = command.GameId 
-                                 Direction = CounterClockWise }
-      | _ -> () ]
+    | _ -> [ gameStarted 0]
 
 let playCard (command: PlayCard) state =
     if state.Player |> Turn.isNot command.Player then 
@@ -178,7 +186,7 @@ let handle = function
 let apply state = function
     | GameStarted event -> 
         { GameAlreadyStarted = true
-          Player = Turn.start event.PlayerCount
+          Player = Turn.start event.FirstPlayer event.PlayerCount 
           TopCard = event.FirstCard 
           Direction = ClockWise }
     | CardPlayed event ->
