@@ -1,10 +1,11 @@
-﻿module ``When playing after a player who failed``
+﻿module FsUno.Tests.``When playing after a player who failed``
 
-open Xunit
-open FsUnit.Xunit
-open Specifications
+open FsUno.Domain
 open Deck
 open Game
+
+open Specifications
+open Xunit
 
 let gameId = GameId 1
 
