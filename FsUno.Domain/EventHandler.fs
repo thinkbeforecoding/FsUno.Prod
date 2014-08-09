@@ -44,5 +44,8 @@ type EventHandler() =
         | PlayerPlayedAtWrongTurn event ->
             Console.ForegroundColor <- ConsoleColor.DarkRed
             printfn "[%d] Player %d played at wrong turn a %a" turnCount event.Player cardPrinter event.Card
+        | PlayerPlayedWrongCard event ->
+            Console.ForegroundColor <- ConsoleColor.DarkRed
+            printfn "[%d] Player %d played a %a: Wrong color wrong value" turnCount event.Player cardPrinter event.Card
         | DirectionChanged event ->
             printfn "     Direction changed. Playing now %A" event.Direction

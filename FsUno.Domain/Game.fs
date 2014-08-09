@@ -31,7 +31,8 @@ let gameId =
 type Event =
     | GameStarted of GameStartedEvent
     | CardPlayed of CardPlayedEvent
-    | PlayerPlayedAtWrongTurn of PlayerPlayedAtWrongTurn 
+    | PlayerPlayedAtWrongTurn of PlayerPlayedWrong 
+    | PlayerPlayedWrongCard of PlayerPlayedWrong
     | DirectionChanged of DirectionChanged
     
 and GameStartedEvent = {
@@ -45,7 +46,7 @@ and CardPlayedEvent = {
     Card: Card
     NextPlayer: int }
 
-and PlayerPlayedAtWrongTurn = {
+and PlayerPlayedWrong = {
     GameId: GameId
     Player: int
     Card: Card }
@@ -161,7 +162,7 @@ let playCard (command: PlayCard) state =
                     |> Turn.player
                 [ cardPlayed nextPlayer ]
         
-        | _ -> invalidOp "Play same color or same value !"
+        | _ -> [ PlayerPlayedWrongCard { GameId = command.GameId; Player = command.Player; Card = command.Card} ] 
 
 // Map commands to aggregates operations
 
@@ -200,7 +201,8 @@ let apply state =
     | DirectionChanged event ->
         { state with
             Direction = event.Direction}
-    | PlayerPlayedAtWrongTurn _ -> state 
+    | PlayerPlayedAtWrongTurn _
+    | PlayerPlayedWrongCard _ -> state 
 
 // Replays all events from start to get current state
 

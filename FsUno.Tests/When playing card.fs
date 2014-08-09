@@ -23,7 +23,7 @@ let ``Same value should be accepted``() =
 let ``Different value and color should be rejected``() =
     Given [ GameStarted { GameId = gameId; PlayerCount = 4; FirstCard = red 3 } ]
     |> When ( PlayCard { GameId = gameId; Player = 0; Card = yellow 8 } )
-    |> ExpectThrows<InvalidOperationException>
+    |> Expect [ PlayerPlayedWrongCard { GameId = gameId; Player = 0; Card = yellow 8}]
 
 [<Fact>]
 let ``First player should play at his turn``() =
