@@ -6,7 +6,8 @@ open Game
 let printCard =
     function
     | Digit(n, color) -> sprintf "%A %O" color n
-    | KickBack(color) -> sprintf "%A Kickback" color
+    | KickBack color -> sprintf "%A Kickback" color
+    | Skip color -> sprintf "%A Skip" color
     
 let cardPrinter () = printCard
 

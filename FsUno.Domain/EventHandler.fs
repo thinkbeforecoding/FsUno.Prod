@@ -12,6 +12,7 @@ type EventHandler() =
             match card with
             | Digit(_, c) -> Some c
             | KickBack c -> Some c
+            | Skip c -> Some c
             |> function
                | Some Red -> ConsoleColor.Red
                | Some Green -> ConsoleColor.Green
@@ -24,6 +25,7 @@ type EventHandler() =
     let printCard = function
         | Digit(n,c) -> sprintf "%A %d" c n.value 
         | KickBack c -> sprintf "%A kickback" c
+        | Skip c -> sprintf "%A skip" c 
 
     let printer f (w:IO.TextWriter) v = w.Write(f v : string)
     let cardPrinter = printer printCard

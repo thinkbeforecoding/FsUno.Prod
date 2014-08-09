@@ -70,6 +70,8 @@ module Turn =
         | ClockWise -> (player + 1) % count, count
         | CounterClockWise -> (player + count - 1) % count, count  // the + count is here to avoid having negative result
 
+    let skip direction = next direction >> next direction
+
     let isNot p (current, _) = p <> current
 
     let set player (_, count) =
@@ -102,6 +104,7 @@ let empty = {
 let color = function
     | Digit(_,c) -> c
     | KickBack c -> c
+    | Skip c -> c
 
 let sameColor c1 c2 = color c1 = color c2
 let (|SameColor|_|) (c1,c2) = if sameColor c1 c2 then Some (color c1) else None
@@ -144,6 +147,13 @@ let playCard (command: PlayCard) state =
                 [ cardPlayed nextPlayer
                   DirectionChanged { GameId = command.GameId
                                      Direction = newDirection } ]
+            | Skip _ ->
+                let nextPlayer =
+                    state.Player
+                    |> Turn.skip state.Direction
+                    |> Turn.player
+
+                [ cardPlayed nextPlayer ]
             | _ -> 
                 let nextPlayer =
                     state.Player

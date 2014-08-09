@@ -20,6 +20,7 @@ type Color =
 type Card =
     | Digit of Value:digit * Color:Color
     | KickBack of Color: Color
+    | Skip of Color:Color
 
 type Direction =
     | ClockWise
