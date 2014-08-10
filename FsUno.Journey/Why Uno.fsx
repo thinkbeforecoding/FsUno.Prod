@@ -51,7 +51,7 @@ I chose Uno because:
 * Concurrency is a concern due to interruptions
 * It contains several Aggregates
 * It's sufficiently complex (with the proposed variant) to be interesting
-* Yet its not *too* complex to make it be boring
+* Yet its not *too* complex to be boring
 
 There still will be a lot of design decisions along the way, because even if the
 rules are already written, we still have to choose how to represent them in the system.

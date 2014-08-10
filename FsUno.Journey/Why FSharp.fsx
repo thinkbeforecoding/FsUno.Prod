@@ -104,7 +104,7 @@ It's also a language that can be put into production on many platforms thanks to
 All this combined together makes it a good way to implement Event Sourcing. It's robust, clean and fast.
 It's also a great way to teach Event Sourcing, even to people who don't speak F#.
 
-I've done a presentation in F# in front of Java people several times - *"You don't
+I've done several presentations in F# in front of Java people - *"You don't
 talk C# and I don't talk Java, let's do this in F# !"* - and it was totally ok.
 
 This being said, most of the things here can be applied outside of F# with possibly
