@@ -39,14 +39,14 @@
         <div class="span9" id="main">
           <h1>Why Uno</h1>
 
-<p><em>tldr; This is not about the 'groking your domain' part of DDD. Here, the domain
+<p><em>tldr; This is not about the 'grokking your domain' part of DDD. Here, the domain
 is already clear and defined by precise rules.
 I don't want to bloat the journey with questioning what the business is.
-Study <a href="http://ziobrando.blogspot.fr/2013/11/introducing-event-storming.html#.U-dALerlrX4">EventStorming</a> for this.</em></p>
+Study <a href="http://ziobrando.blogspot.fr/2013/11/introducing-event-storming.html#.U-dALerlrX4">EventStorming</a> for that.</em></p>
 
 <h2>Choosing a sample domain</h2>
 
-<p>Choosing a sample domain is not a simple thing. I already made several attempts
+<p>Choosing a sample domain is not a simple thing. I've made several attempts
 to select one in the past and failed miserably.</p>
 
 <h3>The case of the fake simplistic domain</h3>
@@ -60,44 +60,43 @@ weak in explaining important concepts.</p>
 
 <h3>The case of the real business domain</h3>
 
-<p>Here, the domain is a real world example, like finance, shipping, hotel business and
+<p>Here, the domain is a real world example, like finance, shipping, the hotel business and
 so on. People agree that it's interesting because it goes into real problems.</p>
 
 <p><strong>But then they start to argue about the business choices of the model.</strong>
 What happens when there is no product left to ship ? How do you deal with an overbooking ?</p>
 
-<p>This are legitimate questions that need to be asked when building a Business Plan, and
-it will drift from the goal here: <em>How to design and implement Functional Event Sourcing</em>.</p>
+<p>These are legitimate questions that need to be asked when building a Business Plan, and
+there starts the drift from the actual goal here: <em>How to design and implement Functional Event Sourcing</em>.</p>
 
-<p>There are loads of people (including me) talking about this subject. Obviously Eric Evan's
-<a href="http://www.domaindrivendesign.org/">Domain Driven Design</a> book, and especially parts
-about Ubiquitus language and knowledge crunching, but also the more recent technique
+<p>There are loads of people (including me) talking about this subject. Obviously Eric Evans'
+<a href="http://www.domaindrivendesign.org/">Domain Driven Design</a> book (especially the parts
+about Ubiquitous Language and knowledge crunching), but also the more recent technique
 of <a href="https://plus.google.com/communities/113258571348605620818">EventStorming</a> created by
 Alberto Brandolini and other DDD practitioners.</p>
 
-<h3>So what ?</h3>
+<h3>So what instead?</h3>
 
-<p>Choosing a game has a real advantage here: <strong>The rules already exist</strong>.</p>
-
-<p>No need to discover them from the mind of Domain Experts, they're here in the leaflet.</p>
+<p>Choosing a game has a real advantage here: <strong>The rules already exist</strong>; No need to elicit
+ them from the mind of Domain Experts, they're right there in the leaflet.</p>
 
 <p>Is it a toy domain because it's a game ? Not really because when rules are rich enough
 to create interesting cases, it will match a real domain in a lot of aspects.</p>
 
-<p>I choosed Uno because:</p>
+<p>I chose Uno because:</p>
 
 <ul>
 <li>Most people already know the rules</li>
-<li>Concurrency matters due to interruptions</li>
-<li>It contains several aggregates</li>
+<li>Concurrency is a concern due to interruptions</li>
+<li>It contains several Aggregates</li>
 <li>It's sufficiently complex (with the proposed variant) to be interesting</li>
-<li>It's not too complex to be boring</li>
+<li>Yet its not <em>too</em> complex to be boring</li>
 </ul>
 
-<p>There still will be a lot of design decision along the way, because even if the
-rule are already written, we still have to choose how to represent them in the system.</p>
+<p>There still will be a lot of design decisions along the way, because even if the
+rules are already written, we still have to choose how to represent them in the system.</p>
 
-<p>And I'll write about these design decisions in this log.</p>
+<p>And I'll write about these design decisions in this log...</p>
 
                     
         </div>
