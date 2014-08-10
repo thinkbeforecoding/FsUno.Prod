@@ -25,18 +25,19 @@ module private Reflection =
 
     let propertyName (case: PropertyInfo) = case.Name
 
-    type UnionValue =
-        | NamedCase of string
-        | ValueCase of string * (string * obj) list
-
-    let unionValues v=            
-        match FSharpValue.GetUnionFields(v, v.GetType()) with
+    let (|NamedCase|UnionCase|SingleCase|) v =            
+        let t = v.GetType()
+        match FSharpValue.GetUnionFields(v, t) with
         | case, [||] -> NamedCase case.Name
         | case, values -> 
             let names =
                 case.GetFields() 
                 |> Seq.map propertyName
-            ValueCase(case.Name, Seq.zip names values |> Seq.toList)
+            let values = Seq.zip names values |> Seq.toList 
+            match values with
+            | [ value ] when FSharpType.GetUnionCases(t).Length = 1 ->
+                SingleCase(case.Name, value)
+            | _ -> UnionCase(case.Name, values)
 
     let getCase t caseName =
             FSharpType.GetUnionCases(t)
@@ -55,7 +56,8 @@ module private Reflection =
         |> Seq.filter isStruct
         |> Seq.filter hasOneProperty
 
-// Json function used by converters
+
+    // Json function used by converters
 module private Json =    
     let writeObject (w: JsonWriter) (s: JsonSerializer) properties =
         let writeProperty (name, value) = 
@@ -86,7 +88,7 @@ module private Json =
             read r
         name
 
-    let deserializeUnion (r: JsonReader) (s:JsonSerializer) getCase =
+    let deserializeUnion (r: JsonReader) (s:JsonSerializer) (t: Type) getCase =
         if r.TokenType = JsonToken.StartObject then
             read r
             let case = getCase r true
@@ -109,24 +111,29 @@ module private Json =
 
             FSharpValue.MakeUnion(case,values)
         else
-            let case = getCase r false
-            FSharpValue.MakeUnion(case, null)
+            match FSharpType.GetUnionCases t with
+            | [| case |] when case.GetFields().Length = 1 ->
+                FSharpValue.MakeUnion(case, [| s.Deserialize(r, case.GetFields().[0].PropertyType) |])
+            | _ ->
+                let case = getCase r false
+                FSharpValue.MakeUnion(case, null)
 
 open Reflection
 
 // This converter reads/writes a discriminated union
 // as a record, adding a "_Case" field.
-let private unionConverter =
+let unionConverter =
     { new JsonConverter() with
         member this.WriteJson(w,v,s) =
-            match unionValues v with
+            match v with
             | NamedCase name -> w.WriteValue name
-            | ValueCase(name, fields) ->
+            | SingleCase(name, (_,fieldValue)) -> s.Serialize(w,fieldValue)
+            | UnionCase(name, fields)  ->
                 ("_Case", box name) :: fields
                 |> Json.writeObject w s
 
         member this.ReadJson(r,t,v,s) =
-            Json.deserializeUnion r s (fun r s -> Json.readCaseName r s |> Reflection.getCase t)
+            Json.deserializeUnion r s t (fun r s -> Json.readCaseName r s |> Reflection.getCase t)
 
         member this.CanConvert t =
             FSharpType.IsUnion t && not (isList t || isOption t) }
@@ -137,14 +144,15 @@ let private unionConverter =
 let private rootUnionConverter<'a> (case: UnionCaseInfo) =
     { new JsonConverter() with
         member this.WriteJson(w,v,s) =
-            match unionValues v with
+            match v with
             | NamedCase _ -> ()
-            | ValueCase(_, fields) ->
+            | SingleCase(_, (_,value)) -> s.Serialize(w, value)           
+            | UnionCase(_, fields) ->
                 fields
                 |> Json.writeObject w s
 
         member this.ReadJson(r,t,v,s) =
-            Json.deserializeUnion r s (fun _ _ -> case)
+            Json.deserializeUnion r s t (fun _ _ -> case)
 
         member this.CanConvert t =
             t = typeof<'a> || t.BaseType = typeof<'a> }
@@ -209,6 +217,7 @@ let deserializeUnion<'a> eventType data =
             serializer.Deserialize<'a>(reader)
             |> Some
        | None -> None
+
 
 let serializeUnion (o:'a)  =
     let case,_ = FSharpValue.GetUnionFields(o, typeof<'a>)

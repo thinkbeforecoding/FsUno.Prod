@@ -1,6 +1,8 @@
 ﻿module FsUno.Tests.``When serializing value``
 
-open FsUno.Domain.Game
+open FsUno.Domain
+open Deck
+open Game
 
 open Serialization
 
@@ -27,15 +29,31 @@ let deserialize<'a> converters s =
 
 [<Fact>]
 let ``a value should be serialized as its content``() =
-    let converters = [ valueConverter typeof<GameId> ]
+    let converters = [ valueConverter typeof<digit> ]
+
+    digit 7
+    |> serialize converters
+    |> should equal "7"
+
+[<Fact>]
+let ``a value should be deserialized from its content``() =
+    let converters = [ valueConverter typeof<digit> ]
+    
+    "7"
+    |> deserialize<digit> converters
+    |> should equal (digit 7)
+
+[<Fact>]
+let ``a single case union should be serialized as its content``() =
+    let converters = [ unionConverter ]
 
     GameId 1234
     |> serialize converters
     |> should equal "1234"
 
 [<Fact>]
-let ``a value should be deserialized from its content``() =
-    let converters = [ valueConverter typeof<GameId> ]
+let ``a single case union should be deserialized from its content``() =
+    let converters = [ unionConverter ]
     
     "1234"
     |> deserialize<GameId> converters
