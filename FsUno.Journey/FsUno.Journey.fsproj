@@ -49,13 +49,14 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="About Streams Lifetime.fsx" />
     <None Include="Template\template-project.html" />
     <None Include="index.fsx" />
     <None Include="Why Uno.fsx" />
     <None Include="Why FSharp.fsx" />
     <None Include="Why FsUno.Prod.fsx" />
     <None Include="The Digit type.fsx" />
+    <None Include="About Streams Lifetime.fsx" />
+    <None Include="Event vs Command Sourcing.fsx" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
