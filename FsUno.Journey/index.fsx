@@ -11,5 +11,5 @@ The code of the project [can be found on github](https://github.com/thinkbeforec
 
 Join the discussion in the [FunctionalEventSourcing room on JabbR](https://jabbr.net/#/rooms/FunctionalEventSourcing)
 
-You can find the table of content on the right.
+You can find the table of contents on the right.
 *)
