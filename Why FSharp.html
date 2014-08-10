@@ -81,6 +81,7 @@ I was starting to learn F# at that time, and here things matched perfectly.</p>
 <span class="l"> 8: </span>
 <span class="l"> 9: </span>
 <span class="l">10: </span>
+<span class="l">11: </span>
 </pre>
 </td>
 <td class="snippet"><pre class="fssnip">
@@ -90,10 +91,11 @@ I was starting to learn F# at that time, and here things matched perfectly.</p>
 <span class="k">let</span> <span onmouseout="hideTip(event, 'fs8', 8)" onmouseover="showTip(event, 'fs8', 8)" class="i">decide</span> <span onmouseout="hideTip(event, 'fs9', 9)" onmouseover="showTip(event, 'fs9', 9)" class="i">state</span> <span onmouseout="hideTip(event, 'fs10', 10)" onmouseover="showTip(event, 'fs10', 10)" class="i">command</span> <span class="o">=</span>
     <span class="k">match</span> <span onmouseout="hideTip(event, 'fs10', 11)" onmouseover="showTip(event, 'fs10', 11)" class="i">command</span> <span class="k">with</span>
     | <span onmouseout="hideTip(event, 'fs5', 12)" onmouseover="showTip(event, 'fs5', 12)" class="i">DoSomething</span> <span class="k">-&gt;</span>
-        <span class="c">// take some decision based on the command and</span>
-        <span class="c">// the current state and returns events that happen</span>
-        <span class="c">// in this case</span>
-        [ <span onmouseout="hideTip(event, 'fs7', 13)" onmouseover="showTip(event, 'fs7', 13)" class="i">SomethingHappened</span> ] </pre>
+        <span class="k">if</span> <span onmouseout="hideTip(event, 'fs9', 13)" onmouseover="showTip(event, 'fs9', 13)" class="i">state</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs1', 14)" onmouseover="showTip(event, 'fs1', 14)" class="i">MyCurrentState</span> <span class="o">=</span> <span class="s">&quot;</span><span class="s">.</span><span class="s">.</span><span class="s">.</span><span class="s">&quot;</span> <span class="k">then</span> ()
+            <span class="c">// take some decision based on the command and</span>
+            <span class="c">// the current state and returns events that happen</span>
+            <span class="c">// in this case</span>
+        [ <span onmouseout="hideTip(event, 'fs7', 15)" onmouseover="showTip(event, 'fs7', 15)" class="i">SomethingHappened</span> ] </pre>
 </td>
 </tr>
 </table>
@@ -108,7 +110,7 @@ side effects.</p>
 </pre>
 </td>
 <td class="snippet"><pre class="fssnip">
-<span class="i">State</span> <span class="k">-&gt;</span> <span class="i">Command</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs11', 14)" onmouseover="showTip(event, 'fs11', 14)" class="i">Event</span> <span onmouseout="hideTip(event, 'fs12', 15)" onmouseover="showTip(event, 'fs12', 15)" class="i">list</span></pre>
+<span class="i">State</span> <span class="k">-&gt;</span> <span class="i">Command</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs11', 16)" onmouseover="showTip(event, 'fs11', 16)" class="i">Event</span> <span onmouseout="hideTip(event, 'fs12', 17)" onmouseover="showTip(event, 'fs12', 17)" class="i">list</span></pre>
 </td>
 </tr>
 </table>
@@ -129,10 +131,10 @@ prevents you from doing so and shoot yourself in the foot.</p>
 </pre>
 </td>
 <td class="snippet"><pre class="fssnip">
-<span class="k">let</span> <span onmouseout="hideTip(event, 'fs13', 16)" onmouseover="showTip(event, 'fs13', 16)" class="i">apply</span> <span onmouseout="hideTip(event, 'fs14', 17)" onmouseover="showTip(event, 'fs14', 17)" class="i">state</span> <span onmouseout="hideTip(event, 'fs15', 18)" onmouseover="showTip(event, 'fs15', 18)" class="i">event</span> <span class="o">=</span>
-    <span class="k">match</span> <span onmouseout="hideTip(event, 'fs15', 19)" onmouseover="showTip(event, 'fs15', 19)" class="i">event</span> <span class="k">with</span>
-    | <span onmouseout="hideTip(event, 'fs7', 20)" onmouseover="showTip(event, 'fs7', 20)" class="i">SomethingHappened</span> <span class="k">-&gt;</span>
-        { <span onmouseout="hideTip(event, 'fs14', 21)" onmouseover="showTip(event, 'fs14', 21)" class="i">state</span> <span class="k">with</span> <span class="i">MyCurrentState</span> <span class="o">=</span> <span class="s">&quot;</span><span class="s">something</span><span class="s"> </span><span class="s">derived</span><span class="s"> </span><span class="s">from</span><span class="s"> </span><span class="s">event</span><span class="s"> </span><span class="s">content</span><span class="s">&quot;</span> }</pre>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs13', 18)" onmouseover="showTip(event, 'fs13', 18)" class="i">apply</span> <span onmouseout="hideTip(event, 'fs9', 19)" onmouseover="showTip(event, 'fs9', 19)" class="i">state</span> <span onmouseout="hideTip(event, 'fs14', 20)" onmouseover="showTip(event, 'fs14', 20)" class="i">event</span> <span class="o">=</span>
+    <span class="k">match</span> <span onmouseout="hideTip(event, 'fs14', 21)" onmouseover="showTip(event, 'fs14', 21)" class="i">event</span> <span class="k">with</span>
+    | <span onmouseout="hideTip(event, 'fs7', 22)" onmouseover="showTip(event, 'fs7', 22)" class="i">SomethingHappened</span> <span class="k">-&gt;</span>
+        { <span onmouseout="hideTip(event, 'fs9', 23)" onmouseover="showTip(event, 'fs9', 23)" class="i">state</span> <span class="k">with</span> <span class="i">MyCurrentState</span> <span class="o">=</span> <span class="s">&quot;</span><span class="s">something</span><span class="s"> </span><span class="s">derived</span><span class="s"> </span><span class="s">from</span><span class="s"> </span><span class="s">event</span><span class="s"> </span><span class="s">content</span><span class="s">&quot;</span> }</pre>
 </td>
 </tr>
 </table>
@@ -146,7 +148,7 @@ prevents you from doing so and shoot yourself in the foot.</p>
 </pre>
 </td>
 <td class="snippet"><pre class="fssnip">
-<span class="i">State</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs11', 22)" onmouseover="showTip(event, 'fs11', 22)" class="i">Event</span> <span class="k">-&gt;</span> <span class="i">State</span></pre>
+<span class="i">State</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs11', 24)" onmouseover="showTip(event, 'fs11', 24)" class="i">Event</span> <span class="k">-&gt;</span> <span class="i">State</span></pre>
 </td>
 </tr>
 </table>
@@ -163,7 +165,7 @@ immutable.</p>
 </pre>
 </td>
 <td class="snippet"><pre class="fssnip">
-<span class="k">let</span> <span onmouseout="hideTip(event, 'fs16', 23)" onmouseover="showTip(event, 'fs16', 23)" class="i">replay</span> <span onmouseout="hideTip(event, 'fs17', 24)" onmouseover="showTip(event, 'fs17', 24)" class="i">events</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs18', 25)" onmouseover="showTip(event, 'fs18', 25)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs19', 26)" onmouseover="showTip(event, 'fs19', 26)" class="i">fold</span> <span onmouseout="hideTip(event, 'fs13', 27)" onmouseover="showTip(event, 'fs13', 27)" class="i">apply</span> <span onmouseout="hideTip(event, 'fs20', 28)" onmouseover="showTip(event, 'fs20', 28)" class="i">State</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs21', 29)" onmouseover="showTip(event, 'fs21', 29)" class="i">empty</span> <span onmouseout="hideTip(event, 'fs17', 30)" onmouseover="showTip(event, 'fs17', 30)" class="i">events</span></pre>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs15', 25)" onmouseover="showTip(event, 'fs15', 25)" class="i">replay</span> <span onmouseout="hideTip(event, 'fs16', 26)" onmouseover="showTip(event, 'fs16', 26)" class="i">events</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs17', 27)" onmouseover="showTip(event, 'fs17', 27)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs18', 28)" onmouseover="showTip(event, 'fs18', 28)" class="i">fold</span> <span onmouseout="hideTip(event, 'fs13', 29)" onmouseover="showTip(event, 'fs13', 29)" class="i">apply</span> <span onmouseout="hideTip(event, 'fs19', 30)" onmouseover="showTip(event, 'fs19', 30)" class="i">State</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs20', 31)" onmouseover="showTip(event, 'fs20', 31)" class="i">empty</span> <span onmouseout="hideTip(event, 'fs16', 32)" onmouseover="showTip(event, 'fs16', 32)" class="i">events</span></pre>
 </td>
 </tr>
 </table>
@@ -199,20 +201,19 @@ minor arrangements. If you find any, let's chat, and I can talk about it here.</
 <div class="tip" id="fs5">union case Command.DoSomething: Command</div>
 <div class="tip" id="fs6">Multiple items<br />module Event<br /><br />from Microsoft.FSharp.Control<br /><br />--------------------<br />type Event = | SomethingHappened<br /><br />Full name: Why FSharp.Event<br /><br />--------------------<br />type Event&lt;&#39;T&gt; =<br />&#160;&#160;new : unit -&gt; Event&lt;&#39;T&gt;<br />&#160;&#160;member Trigger : arg:&#39;T -&gt; unit<br />&#160;&#160;member Publish : IEvent&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Control.Event&lt;_&gt;<br /><br />--------------------<br />type Event&lt;&#39;Delegate,&#39;Args (requires delegate and &#39;Delegate :&gt; Delegate)&gt; =<br />&#160;&#160;new : unit -&gt; Event&lt;&#39;Delegate,&#39;Args&gt;<br />&#160;&#160;member Trigger : sender:obj * args:&#39;Args -&gt; unit<br />&#160;&#160;member Publish : IEvent&lt;&#39;Delegate,&#39;Args&gt;<br /><br />Full name: Microsoft.FSharp.Control.Event&lt;_,_&gt;<br /><br />--------------------<br />new : unit -&gt; Event&lt;&#39;T&gt;<br /><br />--------------------<br />new : unit -&gt; Event&lt;&#39;Delegate,&#39;Args&gt;</div>
 <div class="tip" id="fs7">union case Event.SomethingHappened: Event</div>
-<div class="tip" id="fs8">val decide : state:&#39;a -&gt; command:Command -&gt; Event list<br /><br />Full name: Why FSharp.decide</div>
-<div class="tip" id="fs9">val state : &#39;a</div>
+<div class="tip" id="fs8">val decide : state:State -&gt; command:Command -&gt; Event list<br /><br />Full name: Why FSharp.decide</div>
+<div class="tip" id="fs9">val state : State</div>
 <div class="tip" id="fs10">val command : Command</div>
 <div class="tip" id="fs11">Multiple items<br />module Event<br /><br />from Microsoft.FSharp.Control<br /><br />--------------------<br />type Event&lt;&#39;T&gt; =<br />&#160;&#160;new : unit -&gt; Event&lt;&#39;T&gt;<br />&#160;&#160;member Trigger : arg:&#39;T -&gt; unit<br />&#160;&#160;member Publish : IEvent&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Control.Event&lt;_&gt;<br /><br />--------------------<br />type Event&lt;&#39;Delegate,&#39;Args (requires delegate and &#39;Delegate :&gt; Delegate)&gt; =<br />&#160;&#160;new : unit -&gt; Event&lt;&#39;Delegate,&#39;Args&gt;<br />&#160;&#160;member Trigger : sender:obj * args:&#39;Args -&gt; unit<br />&#160;&#160;member Publish : IEvent&lt;&#39;Delegate,&#39;Args&gt;<br /><br />Full name: Microsoft.FSharp.Control.Event&lt;_,_&gt;<br /><br />--------------------<br />new : unit -&gt; Event&lt;&#39;T&gt;<br /><br />--------------------<br />new : unit -&gt; Event&lt;&#39;Delegate,&#39;Args&gt;</div>
 <div class="tip" id="fs12">type &#39;T list = List&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Collections.list&lt;_&gt;</div>
 <div class="tip" id="fs13">val apply : state:State -&gt; event:Event -&gt; State<br /><br />Full name: Why FSharp.apply</div>
-<div class="tip" id="fs14">val state : State</div>
-<div class="tip" id="fs15">val event : Event</div>
-<div class="tip" id="fs16">val replay : events:Event list -&gt; State<br /><br />Full name: Why FSharp.replay</div>
-<div class="tip" id="fs17">val events : Event list</div>
-<div class="tip" id="fs18">Multiple items<br />module List<br /><br />from Microsoft.FSharp.Collections<br /><br />--------------------<br />type List&lt;&#39;T&gt; =<br />&#160;&#160;| ( [] )<br />&#160;&#160;| ( :: ) of Head: &#39;T * Tail: &#39;T list<br />&#160;&#160;interface IEnumerable<br />&#160;&#160;interface IEnumerable&lt;&#39;T&gt;<br />&#160;&#160;member Head : &#39;T<br />&#160;&#160;member IsEmpty : bool<br />&#160;&#160;member Item : index:int -&gt; &#39;T with get<br />&#160;&#160;member Length : int<br />&#160;&#160;member Tail : &#39;T list<br />&#160;&#160;static member Cons : head:&#39;T * tail:&#39;T list -&gt; &#39;T list<br />&#160;&#160;static member Empty : &#39;T list<br /><br />Full name: Microsoft.FSharp.Collections.List&lt;_&gt;</div>
-<div class="tip" id="fs19">val fold : folder:(&#39;State -&gt; &#39;T -&gt; &#39;State) -&gt; state:&#39;State -&gt; list:&#39;T list -&gt; &#39;State<br /><br />Full name: Microsoft.FSharp.Collections.List.fold</div>
-<div class="tip" id="fs20">type State =<br />&#160;&#160;{MyCurrentState: string;}<br />&#160;&#160;static member empty : State<br /><br />Full name: Why FSharp.State</div>
-<div class="tip" id="fs21">property State.empty: State</div>
+<div class="tip" id="fs14">val event : Event</div>
+<div class="tip" id="fs15">val replay : events:Event list -&gt; State<br /><br />Full name: Why FSharp.replay</div>
+<div class="tip" id="fs16">val events : Event list</div>
+<div class="tip" id="fs17">Multiple items<br />module List<br /><br />from Microsoft.FSharp.Collections<br /><br />--------------------<br />type List&lt;&#39;T&gt; =<br />&#160;&#160;| ( [] )<br />&#160;&#160;| ( :: ) of Head: &#39;T * Tail: &#39;T list<br />&#160;&#160;interface IEnumerable<br />&#160;&#160;interface IEnumerable&lt;&#39;T&gt;<br />&#160;&#160;member Head : &#39;T<br />&#160;&#160;member IsEmpty : bool<br />&#160;&#160;member Item : index:int -&gt; &#39;T with get<br />&#160;&#160;member Length : int<br />&#160;&#160;member Tail : &#39;T list<br />&#160;&#160;static member Cons : head:&#39;T * tail:&#39;T list -&gt; &#39;T list<br />&#160;&#160;static member Empty : &#39;T list<br /><br />Full name: Microsoft.FSharp.Collections.List&lt;_&gt;</div>
+<div class="tip" id="fs18">val fold : folder:(&#39;State -&gt; &#39;T -&gt; &#39;State) -&gt; state:&#39;State -&gt; list:&#39;T list -&gt; &#39;State<br /><br />Full name: Microsoft.FSharp.Collections.List.fold</div>
+<div class="tip" id="fs19">type State =<br />&#160;&#160;{MyCurrentState: string;}<br />&#160;&#160;static member empty : State<br /><br />Full name: Why FSharp.State</div>
+<div class="tip" id="fs20">property State.empty: State</div>
           
         </div>
         <div class="span3">
