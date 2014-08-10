@@ -43,9 +43,10 @@ type Event = | SomethingHappened
 let decide state command =
     match command with
     | DoSomething ->
-        // take some decision based on the command and
-        // the current state and returns events that happen
-        // in this case
+        if state.MyCurrentState = "..." then ()
+            // take some decision based on the command and
+            // the current state and returns events that happen
+            // in this case
         [ SomethingHappened ] 
 
 (** Simple enough, and with immutable values, decide is a pure function without
