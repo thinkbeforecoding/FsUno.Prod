@@ -1,5 +1,5 @@
 ﻿(**
-# The journey
+# Functional Event Sourcing: The journey 
 
 This is the log of the journey toward building [FsUno.Prod](https://github.com/thinkbeforecoding/FsUno.Prod).
 
