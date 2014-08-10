@@ -54,7 +54,7 @@ Target "Journey" <| fun _ ->
     FSharpFormatting.CreateDocs "FsUno.Journey" journeyOutDir template projInfo
 
     let sourceDir = directoryInfo @"tools\FSharp.Formatting.CommandTool\styles\"
-    let outDir = directoryInfo journeyOutDir
+    let outDir = directoryInfo (journeyOutDir @@ "content")
     copyRecursive sourceDir outDir true
     |> ignore
 
