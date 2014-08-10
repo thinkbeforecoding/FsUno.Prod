@@ -1,5 +1,7 @@
 packages/
+tools/
 **/bin/
 **/obj/
 **.user
 **.suo
+**~
