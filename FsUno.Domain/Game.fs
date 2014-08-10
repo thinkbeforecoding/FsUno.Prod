@@ -90,10 +90,11 @@ type State = {
     Turn: Turn
     TopCard: Card }
 
-let empty = {
-    GameAlreadyStarted = false
-    Turn = Turn.empty
-    TopCard = Digit(digit 0,Red) }
+    with
+    static member empty = {
+        GameAlreadyStarted = false
+        Turn = Turn.empty
+        TopCard = Digit(digit 0,Red) }
 
 // Operations on the Game aggregate
 
@@ -184,4 +185,4 @@ let apply state = function
 
 // Replays all events from start to get current state
 
-let replay events = List.fold apply empty events
+let replay events = List.fold apply State.empty events
