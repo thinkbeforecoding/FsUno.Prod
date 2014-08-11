@@ -49,7 +49,6 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Designing Aggregates.fsx" />
     <None Include="Template\template-project.html" />
     <None Include="index.fsx" />
     <None Include="Why Uno.fsx" />
@@ -58,6 +57,7 @@
     <None Include="The Digit type.fsx" />
     <None Include="About Streams Lifetime.fsx" />
     <None Include="Event vs Command Sourcing.fsx" />
+    <None Include="Designing Aggregates.fsx" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
