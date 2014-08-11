@@ -41,13 +41,13 @@
 
 <p>This evening, I start to feel that things won't move much as long as I have only one Aggregate.</p>
 
-<p>With several Aggregates we'll have to add Process and Proccess Managers to orchestrate the
+<p>With several Aggregates we'll have to add Process and Process Managers to orchestrate the
 reactions to events, and ensure the global consistency of the system.</p>
 
-<p>We'll also have to manage projections over serveral aggregates. And make the infrastructure code
+<p>We'll also have to manage projections over several aggregates. And make the infrastructure code
 a bit more generic to not wire it directly to the only aggregate.</p>
 
-<p>But before this happen: Desing !</p>
+<p>But before this happens: Design !</p>
 
 <h2>The Game Aggregate</h2>
 
@@ -56,17 +56,16 @@ a bit more generic to not wire it directly to the only aggregate.</p>
 <hr />
 
 <p>A discussion on Jabbr with <a href="https://twitter.com/@rbartelink">@rbartelink</a> interrupted me in the
-process for something awsome !</p>
+process for something awesome !</p>
 
 <h2>Algebra</h2>
 
-<p>The first question was whether to change the <code>empty</code> member and make it a static member, same
-thing for the <code>apply</code> function.</p>
+<p>The first question was whether to change the <code>empty</code> member and make it a <code>static member</code>, ditto the <code>apply</code> function.</p>
 
 <p>The second was whether to try to hide <code>empty</code> and <code>apply</code> completly in a <code>replay</code> function.</p>
 
-<p><code>empty</code> as a static member feels quite natural, but I had a problem with apply. Its signature
-seems to validate this change, but putting it before handle seems wrong.</p>
+<p><code>empty</code> as a static member feels quite natural, but I had a problem with <code>apply</code>. Its signature
+seems to validate this change, but putting it before <code>handle</code> seems wrong.</p>
 
 <p>The problem is that when reading an Aggregate, the first important thing is the decision
 in the <code>handle</code> method, and changes in <code>apply</code> are always implemented later. Changing
@@ -128,20 +127,20 @@ this would break the flow.</p>
 
 <ul>
 <li>S is a set</li>
-<li>+ is closed on the set (the signature would be S -> S -> S</li>
+<li>+ is closed on the set (the signature would be S -> S -> S)</li>
 <li>+ is associative ( x + y + z = (x + y) + z = x + (y + z) )</li>
 <li>n is the neutral element ( x + n = n + x = x)</li>
 </ul>
 
-<p>Most of mathematatical structures are defined using sets (here S), functions (here +) and specific set items
-(here n).</p>
+<p>Most of mathematical structures are defined using sets (here <code>S</code>), functions (here <code>+</code>) and specific set items
+(here <code>n</code>).</p>
 
 <h3>Aggregates</h3>
 
 <p>Aggregates are not monoids, but you can see that it could be defined using the same
 kind of primary element:</p>
 
-<p>A quadruple (State, handle, apply, empty) with the rules and signature you know. <code>handle</code> and <code>apply</code>
+<p>A quadruple (State, handle, apply, empty) with the rules and signatures you know. <code>handle</code> and <code>apply</code>
 are not closed on the set but the composition is not bad.</p>
 
 <p>If we alias <code>apply</code> with <code>+</code> we can write:</p>
@@ -162,7 +161,7 @@ are not closed on the set but the composition is not bad.</p>
 
 <p>Makes sense, right ?</p>
 
-<p>The only change that I would propose is to change empty to <code>initial</code> because it's the <strong>initial</strong> state:</p>
+<p>The only change that I would propose is to change <code>empty</code> to <code>initial</code> because it's the <strong>initial</strong> state:</p>
 
 <table class="pre"><tr><td class="lines"><pre class="fssnip">
 <span class="l">1: </span>
@@ -182,12 +181,12 @@ are not closed on the set but the composition is not bad.</p>
 
 <p>Hiding <code>apply</code> and <code>initial</code> would seriously reduce the composability of all this.</p>
 
-<h3>High order functions</h3>
+<h3>Higher order functions</h3>
 
 <p><code>replay</code> can actually be seen as a high order function built using <code>initial</code> and <code>apply</code>.
 To build it directly from the <code>State</code> type we can use 
 <a href="http://msdn.microsoft.com/en-us/library/dd548046.aspx">statically resolved type parameters</a>,
-you can hover replay definition to see type constraints:</p>
+you can hover over the <code>replay</code> definition below to see the type constraints:</p>
 
 <table class="pre"><tr><td class="lines"><pre class="fssnip">
 <span class="l">1: </span>
@@ -205,10 +204,10 @@ you can hover replay definition to see type constraints:</p>
 </tr>
 </table>
 
-<p>Ok it's a bit more complicated but you can check the signature by hovering the function, and
-it can be used on any type that has <code>initial</code> and apply members that have expected signature.
-And the inference still works by return type, so any hint to the compiler indicating
-that a specific Aggregate state type is in use, there is no need for further type annotation.</p>
+<p>Ok, it's a bit more complicated but you can check the signature by hovering the function, and
+it can be used on any type that has <code>initial</code> and <code>apply</code> members that adhere to the expected signature.
+And the inference still works from the return type, so any hint to the compiler indicating
+the specific Aggregate <code>State</code> type in use means there is no need for further type annotations.</p>
 
 <table class="pre"><tr><td class="lines"><pre class="fssnip">
 <span class="l">1: </span>
@@ -224,11 +223,11 @@ that a specific Aggregate state type is in use, there is no need for further typ
 </tr>
 </table>
 
-<p>What do we have here ?
+<p>So where are we now ?
 Better vocabulary with <code>initial</code>, better understanding about the Aggregate <em>algebra</em>, and
-a high order function function to use it.</p>
+a high order function to use it.</p>
 
-<p>We can see how we'll implement more generic command handlers then.</p>
+<p>Now we can see how we'll implement more generic command handlers.</p>
 
 <p>Good evening !</p>
 
