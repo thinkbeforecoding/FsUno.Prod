@@ -62,14 +62,14 @@ It would be possible to write this but it's not part of the Aggregate, let's see
 
 ### Monoids
 
-Do you remember how a Monoid is defined ?
+Do you remember how a [Monoid](http://en.wikipedia.org/wiki/Monoid) is defined ?
 
 A monoid is a triple (S,+,n) where 
 
-* S is a set
-* + is closed on the set (the signature would be S -> S -> S)
-* + is associative ( x + y + z = (x + y) + z = x + (y + z) )
-* n is the neutral element ( x + n = n + x = x)
+* ``S`` is a set
+* ``+`` is closed on the set (the signature would be S -> E -> S)
+* ``+`` is associative ( x + y + z = (x + y) + z = x + (y + z) )
+* ``n`` is the [neutral(aka identity)](http://en.wikipedia.org/wiki/Identity_element) element ( x + n = n + x = x)
 
 Most of mathematical structures are defined using sets (here `S`), functions (here `+`) and specific set items
 (here `n`).
@@ -82,7 +82,7 @@ kind of primary element:
 A quadruple (State, handle, apply, empty) with the rules and signatures you know. ``handle`` and ``apply``
 are not closed on the set but the composition is not bad.
 
-If we alias ``apply`` with ``+`` we can write:
+If we alias ``apply`` as ``+`` we can write:
 *)
     let (+) = State.apply
 
