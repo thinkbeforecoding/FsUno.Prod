@@ -121,15 +121,15 @@ this would break the flow.</p>
 
 <h3>Monoids</h3>
 
-<p>Do you remember how a Monoid is defined ?</p>
+<p>Do you remember how a <a href="http://en.wikipedia.org/wiki/Monoid">Monoid</a> is defined ?</p>
 
 <p>A monoid is a triple (S,+,n) where</p>
 
 <ul>
-<li>S is a set</li>
-<li>+ is closed on the set (the signature would be S -> S -> S)</li>
-<li>+ is associative ( x + y + z = (x + y) + z = x + (y + z) )</li>
-<li>n is the neutral element ( x + n = n + x = x)</li>
+<li><code>S</code> is a set</li>
+<li><code>+</code> is closed on the set (the signature would be S -> S -> S)</li>
+<li><code>+</code> is associative ( x + y + z = (x + y) + z = x + (y + z) )</li>
+<li><code>n</code> is the <a href="http://en.wikipedia.org/wiki/Identity_element">neutral(aka identity)</a> element ( x + n = n + x = x)</li>
 </ul>
 
 <p>Most of mathematical structures are defined using sets (here <code>S</code>), functions (here <code>+</code>) and specific set items
@@ -143,7 +143,7 @@ kind of primary element:</p>
 <p>A quadruple (State, handle, apply, empty) with the rules and signatures you know. <code>handle</code> and <code>apply</code>
 are not closed on the set but the composition is not bad.</p>
 
-<p>If we alias <code>apply</code> with <code>+</code> we can write:</p>
+<p>If we alias <code>apply</code> as <code>+</code> we can write:</p>
 
 <table class="pre"><tr><td class="lines"><pre class="fssnip">
 <span class="l">1: </span>
