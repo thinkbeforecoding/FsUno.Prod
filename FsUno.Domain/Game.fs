@@ -3,6 +3,8 @@
 open Deck
 
 type GameId = GameId of int
+
+// Commands
     
 type Command =
     | StartGame of StartGame
@@ -18,11 +20,8 @@ and PlayCard = {
     Player: int
     Card: Card }
 
+// Events
 
-let gameId = function
-    | StartGame c -> c.GameId
-    | PlayCard c -> c.GameId
-    
 type Event =
     | GameStarted of GameStartedEvent
     | CardPlayed of CardPlayedEvent
@@ -35,7 +34,6 @@ and GameStartedEvent = {
     PlayerCount: int
     FirstCard: Card 
     FirstPlayer: int }
-
 
 and CardPlayedEvent = {
     GameId: GameId
@@ -52,9 +50,7 @@ and DirectionChanged = {
     GameId: GameId
     Direction: Direction }
 
-
-// A type representing current player turn
-// All operation should be done inside the module
+// Type representing current player turn; All operations should be encapsulated
 
 type Turn = { 
     Player: int
@@ -83,7 +79,8 @@ type Turn = {
 
     member turn.setDirection direction =
         { turn with Turn.Direction = direction }
-        
+
+// State
 
 type State = {
     GameAlreadyStarted: bool
@@ -144,7 +141,6 @@ let playCard (command: PlayCard) state =
               
             match command.Card with
             | KickBack _ ->
-
                 let nextTurn = state.Turn.reverse.next
 
                 [ cardPlayed nextTurn.Player
@@ -157,16 +153,21 @@ let playCard (command: PlayCard) state =
             | _ -> 
                 let nextTurn = state.Turn.next
                 [ cardPlayed nextTurn.Player ]
-        
         | _ -> [ PlayerPlayedWrongCard { GameId = command.GameId; Player = command.Player; Card = command.Card} ] 
 
-// Map commands to aggregates operations
+// Map commands to aggregate operations
 
 let handle = function
     | StartGame command -> startGame command
     | PlayCard command -> playCard command
 
-// Applies state changes for events
+// Identify Aggregate instance to direct Commands to
+
+let gameId = function
+    | StartGame c -> c.GameId
+    | PlayCard c -> c.GameId
+    
+// Applies State changes for events
 
 type State with
     static member apply state = function
@@ -181,6 +182,6 @@ type State with
         | DirectionChanged event ->
             { state with 
                 Turn = state.Turn.setDirection event.Direction }
-        | PlayerPlayedAtWrongTurn _
-        | PlayerPlayedWrongCard _ -> state 
-
+        | PlayerPlayedAtWrongTurn _ 
+        | PlayerPlayedWrongCard _ -> 
+            state
