@@ -21,11 +21,11 @@ module Game =
                 let! events, lastEvent, nextEvent = 
                     readStream (streamId gameId) version 500
 
-                let state = List.fold apply state events
+                let state = List.fold State.apply state events
                 match nextEvent with
                 | None -> return lastEvent, state
                 | Some n -> return! fold state n }
-            fold State.empty 0
+            fold State.initial 0
 
         let save gameId expectedVersion events = 
             appendToStream (streamId gameId) expectedVersion events
@@ -39,7 +39,7 @@ module Game =
                         let events = handle command state
                         do! save gameId version events
 
-                        let newState = List.fold apply state events
+                        let newState = List.fold State.apply state events
                         return! loop (version + List.length events) newState  }
                 async {
                     let! version, state = load gameId

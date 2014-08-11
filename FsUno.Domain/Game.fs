@@ -91,7 +91,7 @@ type State = {
     TopCard: Card }
 
     with
-    static member empty = {
+    static member initial = {
         GameAlreadyStarted = false
         Turn = Turn.empty
         TopCard = Digit(digit 0,Red) }
@@ -168,21 +168,19 @@ let handle = function
 
 // Applies state changes for events
 
-let apply state = function
-    | GameStarted event -> 
-        { GameAlreadyStarted = true
-          Turn = Turn.start event.FirstPlayer event.PlayerCount 
-          TopCard = event.FirstCard }
-    | CardPlayed event ->
-        { state with
-            Turn = state.Turn.setPlayer event.NextPlayer
-            TopCard = event.Card }
-    | DirectionChanged event ->
-        { state with 
-            Turn = state.Turn.setDirection event.Direction }
-    | PlayerPlayedAtWrongTurn _
-    | PlayerPlayedWrongCard _ -> state 
+type State with
+    static member apply state = function
+        | GameStarted event -> 
+            { GameAlreadyStarted = true
+              Turn = Turn.start event.FirstPlayer event.PlayerCount 
+              TopCard = event.FirstCard }
+        | CardPlayed event ->
+            { state with
+                Turn = state.Turn.setPlayer event.NextPlayer
+                TopCard = event.Card }
+        | DirectionChanged event ->
+            { state with 
+                Turn = state.Turn.setDirection event.Direction }
+        | PlayerPlayedAtWrongTurn _
+        | PlayerPlayedWrongCard _ -> state 
 
-// Replays all events from start to get current state
-
-let replay events = List.fold apply State.empty events

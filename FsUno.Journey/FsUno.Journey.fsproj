@@ -49,6 +49,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Designing Aggregates.fsx" />
     <None Include="Template\template-project.html" />
     <None Include="index.fsx" />
     <None Include="Why Uno.fsx" />

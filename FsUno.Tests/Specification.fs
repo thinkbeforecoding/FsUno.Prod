@@ -6,6 +6,12 @@ open Game
 open PrettyPrint
 open FsUnit.Xunit
 
+// A generic replay function that can be used on any aggregate
+let inline replay events =
+    let initial = (^S: (static member initial: ^S) ()) 
+    let apply s = (^S: (static member apply: ^S -> (^E -> ^S)) s)
+    List.fold apply initial events
+
 let Given (events: Event list) = events
 let When (command: Command) events = events, command
 let Expect (expected: Event list) (events, command) =
