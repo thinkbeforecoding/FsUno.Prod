@@ -2,8 +2,6 @@
 
 open Deck
 
-type GameId = GameId of int
-
 // Commands
     
 type Command =
@@ -25,30 +23,9 @@ and PlayCard = {
 type Event =
     | GameStarted of GameStartedEvent
     | CardPlayed of CardPlayedEvent
-    | PlayerPlayedAtWrongTurn of PlayerPlayedWrong 
-    | PlayerPlayedWrongCard of PlayerPlayedWrong
-    | DirectionChanged of DirectionChanged
-    
-and GameStartedEvent = {
-    GameId: GameId
-    PlayerCount: int
-    FirstCard: Card 
-    FirstPlayer: int }
-
-and CardPlayedEvent = {
-    GameId: GameId
-    Player: int
-    Card: Card
-    NextPlayer: int }
-
-and PlayerPlayedWrong = {
-    GameId: GameId
-    Player: int
-    Card: Card }
-
-and DirectionChanged = {
-    GameId: GameId
-    Direction: Direction }
+    | PlayerPlayedAtWrongTurn of PlayerPlayedAtWrongTurnEvent
+    | PlayerPlayedWrongCard of PlayerPlayedWrongCardEvent
+    | DirectionChanged of DirectionChangedEvent
 
 // Type representing current player turn; All operations should be encapsulated
 

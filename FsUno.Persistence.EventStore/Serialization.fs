@@ -1,6 +1,6 @@
 ﻿module Serialization
 
-open FsUno.Domain
+open FsUno.Domain.Deck
 
 // This module provides Json serialization to store
 // events in the event store 
@@ -197,7 +197,7 @@ let valueConverter (valueType: Type) =
 
 let converters =
     let valueConverters =
-        getValues typeof<Game.GameId>.Assembly
+        getValues typeof<GameId>.Assembly
         |> Seq.map valueConverter
         |> Seq.toList
     [ unionConverter;optionConverter]
