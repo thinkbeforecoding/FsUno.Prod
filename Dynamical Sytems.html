@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <!-- 
+      The More Algebra
+ parameters will be replaced with the 
+      document title extracted from the <h1> element or
+      file name, if there is no <h1> heading
+    -->
+    <title>More Algebra
+</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FsUno.Prod">
+    <meta name="author" content="Jérémie Chassaing">
+    <script src="http://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="http://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="content/style.css" />
+    <script src="content/tips.js" type="text/javascript"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="https://github.com/thinkbeforecoding/FsUno.Prod/">github page</a></li>
+        </ul>
+        <h3 class="muted">FsUno.Prod</h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          <h1>More Algebra</h1>
+
+<p><em>2014-09-05</em></p>
+
+<p>After a short one week vacation, getting back to FsUno was a bit difficult with work and kids back to school. Today, I'm stuck in bed with a flue, giving me some time to write a bit.</p>
+
+<p>Just after writting the previous log entry, there was a confusion with reviewers... is this a Monoid or not ?</p>
+
+<p>It looks like one, but is definitly not since the function <code>apply</code> is not closed on the set.</p>
+
+<p>But a simple structure like this <strong>had</strong> to have a name, and be studied by mathematicians !</p>
+
+<h2>Wikipedia to the rescue</h2>
+
+<p>First of all, if <code>apply</code> is not an internal operation, it surely is external !</p>
+
+<p>Found this:</p>
+
+<p>[<a href="http://en.m.wikipedia.org/wiki/External_(mathematics)">http://en.m.wikipedia.org/wiki/External_(mathematics)</a>]</p>
+
+<p><strong>Left external binary operation</strong> and <strong>Right external binary operation</strong>. In the cas of fold the signature is usually <code>'Acc -&gt; 'T -&gt; 'Acc</code> so it's a Right external binary operation !</p>
+
+<ul>
+<li>An external magma ( S, * ) over R is a set S with an external binary operation. This satisfies r * s in S for all s in S, r in R (external closure).</li>
+<li>An external semigroup ( S, * ) over (R, .) is an external magma that satisfies (r1 . r2) * s = r1 * (r2 * s) for all s in S, r1, r2 in R (externally associative).</li>
+<li>An external monoid ( S, * ) over (R, .) is an external semigroup in which there exists 1 in R such that 1 * s = s for all s in S (has external identity element).</li>
+</ul>
+
+<p>Great !</p>
+
+<p>Here's how it goes. Replace:</p>
+
+<ul>
+<li><p>R with the set of event lists</p></li>
+<li><p>. with the event list concatenation</p></li>
+<li><p>1 with the empty event list</p></li>
+<li><p>S with the set of states</p></li>
+<li><p>* with the apply function</p></li>
+</ul>
+
+<p>And we have exactly an external monoid here !</p>
+
+<p>A bit further:</p>
+
+<ul>
+<li>A dynamical system (T, S, Phi) is an external monoid (S, Phi) over the monoid (T, +).</li>
+</ul>
+
+<h2>Dynamical system</h2>
+
+<p><strong>That</strong> seems interesting !</p>
+
+<p><em>The dynamical system concept is a mathematical formalization for any fixed "rule" which describes the time dependence of a point's position in its ambient space.</em></p>
+
+<p><em>The concept unifies very different types of such "rules" in mathematics: the different choices made for how time is measured and the special properties of the ambient space may give an idea of the vastness of the class of objects described by this concept.</em></p>
+
+<p><em>Time can be measured by integers, by real or complex numbers or can be a more general algebraic object, losing the memory of its physical origin, and the ambient space may be simply a set, without the need of a smooth space-time structure defined on it.</em></p>
+
+<p>from [<a href="http://en.m.wikipedia.org/wiki/Dynamical_system_(definition)">http://en.m.wikipedia.org/wiki/Dynamical_system_(definition)</a>]</p>
+
+<p>The fun thing is that in our case, time passing is not uniform like a real number, but <strong>a list of events</strong> which can be not evenly spaced in time !</p>
+
+<p>From there, we can find a bunch of theories studying those systems from various points of view.. I did not sort out all that yet but there are surely interesting properties and invariants to find around there.</p>
+
+<p>And the first interesting point is that we didn't get things wrong previously since the first state is called <code>initial state</code> !</p>
+
+<p>The <code>apply</code> function is called the <code>evolution function</code> and could be named <code>evolve</code> in our case.</p>
+
+<p>The set of states is called the <strong>Phase Space</strong> or the <strong>State Space</strong>.</p>
+
+<p>And terms like flow and orbits appear... we can surely do something with it !</p>
+
+<p>There are still many things to read on the subject but being backed by theory is surely a serious advantage !</p>
+
+                    
+        </div>
+        <div class="span3">
+
+          <ul class="nav nav-list" id="menu">
+            <li class="nav-header">FsUno.Prod</li>
+            <li><a href=index.html>The Journey</a></li>
+            <li><a href=Why%20Uno.html>Why Uno</a></li>
+            <li><a href=Why%20FSharp.html>Why FSharp</a></li>
+            <li><a href=Why%20FsUno.Prod.html>Why FsUno.Prod</a></li>
+            <li><a href=The%20Digit%20type.html>The Digit type</a></li>
+            <li><a href=About%20Streams%20Lifetime.html>About Streams Lifetime</a></li>
+            <li><a href=Event%20vs%20Command%20Sourcing.html>Event vs Command Sourcing</a></li>
+            <li><a href=Designing%20Aggregates.html>Designing Aggregates</a></li>
+            <li><a href=Dynamical%20Sytems.html>Dynamical Sytems</a></li>
+            <!--li><a href="index.html">Home page</a></!--li>
+            <!--
+
+              Here you can add links to other pages of the documentation 
+              The 'divider' element creates a separator and additional
+              'nav-header' can be used to add sub-headings in the menu:
+
+              * <li class="divider"></li>
+              * <li><a href="...">...</a></li>
+              * <li class="nav-header">Sub-heading</li>
+
+            -->
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/thinkbeforecoding/FsUno.Prod/"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>
+  </body>
+</html>
