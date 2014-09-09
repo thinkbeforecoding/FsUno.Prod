@@ -1,4 +1,4 @@
-﻿#r "packages/Fake/tools/FakeLib.dll"
+﻿#r "tools/Fake/tools/FakeLib.dll"
 #r "System.Xml.Linq"
 
 open System

@@ -58,6 +58,7 @@
     <None Include="About Streams Lifetime.fsx" />
     <None Include="Event vs Command Sourcing.fsx" />
     <None Include="Designing Aggregates.fsx" />
+    <None Include="Dynamical Sytems.fsx" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
