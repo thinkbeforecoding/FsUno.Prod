@@ -2,7 +2,7 @@
 # More Algebra
 *2014-09-05*
 
-After a short one week vacation, getting back to FsUno was a bit difficult with work and kids back to school. Today, I'm stuck in bed with a flue, giving me some time to write a bit.
+After a short one week vacation, getting back to FsUno was a bit difficult with work and kids back to school. Today, I'm stuck in bed with a flu, giving me some time to write a bit.
 
 Just after writting the previous log entry, there was a confusion with reviewers... is this a Monoid or not ?
 
@@ -18,7 +18,7 @@ Found this:
 
 [http://en.m.wikipedia.org/wiki/External_(mathematics)]
 
-**Left external binary operation** and **Right external binary operation**. In the cas of fold the signature is usually ``'Acc -> 'T -> 'Acc`` so it's a Right external binary operation !
+**Left external binary operation** and **Right external binary operation**. In the case of fold the signature is usually ``'Acc -> 'T -> 'Acc`` so it's a Right external binary operation !
 
 * An external magma ( S, \* ) over R is a set S with an external binary operation. This satisfies r \* s in S for all s in S, r in R (external closure).
 * An external semigroup ( S, \* ) over (R, .) is an external magma that satisfies (r1 . r2) \* s = r1 \* (r2 \* s) for all s in S, r1, r2 in R (externally associative).
@@ -57,9 +57,9 @@ A bit further:
 
 from [http://en.m.wikipedia.org/wiki/Dynamical_system_(definition)]
 
-The fun thing is that in our case, time passing is not uniform like a real number, but **a list of events** which can be not evenly spaced in time !
+The fun thing is that in our case, time passing is not uniform like a real number, but **a list of events** which may not be spaced at regular intervals in time !
 
-From there, we can find a bunch of theories studying those systems from various points of view.. I did not sort out all that yet but there are surely interesting properties and invariants to find around there.
+From there, we can find a bunch of theories studying those systems from various points of view.. I did not sort all that out yet but there are surely interesting properties and invariants to find around there.
 
 And the first interesting point is that we didn't get things wrong previously since the first state is called ``initial state`` !
 
