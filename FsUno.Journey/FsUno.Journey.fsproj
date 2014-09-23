@@ -37,29 +37,6 @@
     <DocumentationFile>bin\Release\FsUno.Journey.XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Template\template-project.html" />
-    <None Include="index.fsx" />
-    <None Include="Why Uno.fsx" />
-    <None Include="Why FSharp.fsx" />
-    <None Include="Why FsUno.Prod.fsx" />
-    <None Include="The Digit type.fsx" />
-    <None Include="About Streams Lifetime.fsx" />
-    <None Include="Event vs Command Sourcing.fsx" />
-    <None Include="Designing Aggregates.fsx" />
-    <None Include="Dynamical Sytems.fsx" />
-  </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
   </PropertyGroup>
@@ -76,6 +53,30 @@
     </Otherwise>
   </Choose>
   <Import Project="$(FSharpTargetsPath)" />
+  <ItemGroup>
+    <None Include="Template\template-project.html" />
+    <None Include="index.fsx" />
+    <None Include="Why Uno.fsx" />
+    <None Include="Why FSharp.fsx" />
+    <None Include="Why FsUno.Prod.fsx" />
+    <None Include="The Digit type.fsx" />
+    <None Include="About Streams Lifetime.fsx" />
+    <None Include="Event vs Command Sourcing.fsx" />
+    <None Include="Designing Aggregates.fsx" />
+    <None Include="Dynamical Sytems.fsx" />
+    <None Include="Exception or Event.fsx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
