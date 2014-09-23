@@ -16,8 +16,8 @@ let xn = XName.op_Implicit
 
 let journeyOutDir = "bin\Journey"
 
-Target "Clean" <| fun _ ->
-    CleanDir "bin"
+Target "CleanJourney" <| fun _ ->
+    CleanDir "bin\Journey"
 
 Target "Journey" <| fun _ ->
     let template = @"FsUno.Journey\Template\template-project.html"
@@ -69,9 +69,21 @@ Target "ReleaseJourney" <| fun _ ->
     StageAll pages 
     Commit pages "Update generated documentation" 
     Branches.push pages 
- 
 
+Target "CleanBuild" <| fun _ ->
+    CleanDir "bin\Release"
 
-"Clean" ==> "Journey" ==> "ReleaseJourney"
+Target "Build" <| fun _ ->
+    !! "FsUno.Prod.sln"
+    |> MSBuildRelease @"bin\Release" "Build"
+    |> Log "MsBuild"
 
-RunTargetOrDefault "Journey"
+Target "All" DoNothing
+
+"CleanBuild" ==> "Build"
+"CleanJourney" ==> "Journey" ==> "ReleaseJourney"
+
+"Build" ==> "All"
+"Journey" ==> "All"
+
+RunTargetOrDefault "All"
