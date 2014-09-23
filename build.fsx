@@ -1,4 +1,4 @@
-﻿#r "tools/Fake/tools/FakeLib.dll"
+﻿#r "packages/Fake/tools/FakeLib.dll"
 #r "System.Xml.Linq"
 
 open System
@@ -51,9 +51,10 @@ Target "Journey" <| fun _ ->
          "project-name", title 
          "table-of-content", tableOfContent] 
 
+    FSharpFormatting.toolPath <- @"packages\FSharp.Formatting.CommandTool\tools\fsformatting.exe"
     FSharpFormatting.CreateDocs "FsUno.Journey" journeyOutDir template projInfo
 
-    let sourceDir = directoryInfo @"tools\FSharp.Formatting.CommandTool\styles\"
+    let sourceDir = directoryInfo @"packages\FSharp.Formatting.CommandTool\styles\"
     let outDir = directoryInfo (journeyOutDir @@ "content")
     copyRecursive sourceDir outDir true
     |> ignore

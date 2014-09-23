@@ -1,9 +1,10 @@
 @echo off
 
-.nuget\nuget.exe install FAKE -OutputDirectory tools -ExcludeVersion -source http://nuget.org/api/v2
-.nuget\nuget.exe install FSharp.Formatting.CommandTool -OutputDirectory tools -ExcludeVersion -source http://nuget.org/api/v2
-cls  
+if not exist .paket\paket.exe (
+    .paket\paket.bootstrapper.exe
+)
+.paket\paket.exe install
 
 set encoding=utf-8
-tools\FAKE\tools\FAKE.exe build.fsx %*
+packages\FAKE\tools\FAKE.exe build.fsx %*
 

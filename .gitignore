@@ -5,3 +5,5 @@ tools/
 **.user
 **.suo
 **~
+.paket/paket.exe
+

@@ -49,15 +49,19 @@ let serialize event =
     EventData(Guid.NewGuid(), typeName, true, data, null)
 
 let create() = 
-    let s = EventStoreConnection.Create(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1113))
-    s.Connect()
-    s
+    async {
+        let s = EventStoreConnection.Create(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1113))
+        do! Async.AwaitTask ( s.ConnectAsync() )
+        return s }
 
-let subscribe (projection: Event -> unit) (store: IEventStoreConnection) =
+let subscribe (projection: Event -> unit) (getStore: Async<IEventStoreConnection>) =
+    async {
+    let! store = getStore
     let credential = SystemData.UserCredentials("admin", "changeit")
-    store.SubscribeToAll(true, (fun s e -> deserialize e |> Option.iter projection), userCredentials = credential) |> ignore
-    store
-
+    do! Async.AwaitTask
+        <| store.SubscribeToAllAsync(true, (fun s e -> deserialize e |> Option.iter projection), userCredentials =      credential) |> Async.Ignore
+    return store }
+    |> Async.RunSynchronously
 
 let readStream (store: IEventStoreConnection) streamId version count = 
     async {
@@ -79,4 +83,4 @@ let appendToStream (store: IEventStoreConnection) streamId expectedVersion newEv
     async {
         let serializedEvents = [| for event in newEvents -> serialize event |]
 
-        do! store.AsyncAppendToStream streamId expectedVersion serializedEvents }
+        do! Async.Ignore <| store.AsyncAppendToStream streamId expectedVersion serializedEvents }

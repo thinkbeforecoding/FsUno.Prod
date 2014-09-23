@@ -1,0 +1,7 @@
+source http://nuget.org/api/v2
+nuget Fake
+nuget FSharp.Formatting.CommandTool
+nuget EventStore.Client
+nuget Newtonsoft.Json
+nuget FsUnit.xUnit 
+nuget xunit 
