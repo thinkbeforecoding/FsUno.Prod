@@ -105,6 +105,7 @@ let (|SameColor|_|) (c1,c2) = if sameColor c1 c2 then Some (color c1) else None
 let (|SameValue|_|) = function
     | Digit(n1,_), Digit(n2,_) when n1 = n2 -> Some()
     | KickBack _, KickBack _ -> Some()
+    | Skip _, Skip _ -> Some()
     | _ -> None
 
 let startGame (command: StartGame) state =
