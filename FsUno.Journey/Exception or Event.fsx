@@ -13,7 +13,7 @@ A few years back, I wrote a post on the subject: [Business Errors are Just Ordin
 
 And it makes a distinction betweens several cases...
 
-###] Broken invariants
+## Broken invariants
 
 This should never happen since the very purpose of an aggregate is to preserve invariants.
 
@@ -23,7 +23,7 @@ easy; next...
 
 There a two cases here:
 
-#### Command data is meaningless
+### Command data is meaningless
 
 Try to avoid this as much as you can by designing command types that cannot represent invalid cases. Where that's not possible, validate the data and raise an exception. The caller is responsible for not calling the aggregate with such commands, but one should still check it at the aggregate boundary to be sure.
 
