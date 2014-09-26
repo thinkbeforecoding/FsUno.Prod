@@ -59,7 +59,7 @@ from [http://en.m.wikipedia.org/wiki/Dynamical_system_(definition)]
 
 The fun thing is that in our case, time passing is not uniform like a real number, but **a list of events** which may not be spaced at regular intervals in time !
 
-From there, we can find a bunch of theories studying those systems from various points of view.. I did not sort all that out yet but there are surely interesting properties and invariants to find around there.
+From there, we can find a bunch of theories studying those systems from various points of view. I did not sort all that out yet but there are surely interesting properties and invariants to find around there.
 
 And the first interesting point is that we didn't get things wrong previously since the first state is called ``initial state`` !
 
