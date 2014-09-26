@@ -63,7 +63,7 @@
     <None Include="About Streams Lifetime.fsx" />
     <None Include="Event vs Command Sourcing.fsx" />
     <None Include="Designing Aggregates.fsx" />
-    <None Include="Dynamical Sytems.fsx" />
+    <None Include="Dynamical Systems.fsx" />
     <None Include="Exception or Event.fsx" />
   </ItemGroup>
   <ItemGroup>
