@@ -6,4 +6,8 @@ tools/
 **.suo
 **~
 .paket/paket.exe
+.fake/
+**.ncrunchproject
+**.ncrunchsolution
+_NCRUNCH_*
 

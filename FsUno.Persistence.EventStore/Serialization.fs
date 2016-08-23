@@ -127,7 +127,7 @@ let unionConverter =
         member this.WriteJson(w,v,s) =
             match v with
             | NamedCase name -> w.WriteValue name
-            | SingleCase(name, (_,fieldValue)) -> s.Serialize(w,fieldValue)
+            | SingleCase(_, (_,fieldValue)) -> s.Serialize(w,fieldValue)
             | UnionCase(name, fields)  ->
                 ("_Case", box name) :: fields
                 |> Json.writeObject w s

@@ -24,7 +24,7 @@ type EventHandler() =
 
     
     let printCard = function
-        | Digit(n,c) -> sprintf "%A %d" c n.value 
+        | Digit(n,c) -> sprintf "%A %A" c n
         | KickBack c -> sprintf "%A kickback" c
         | Skip c -> sprintf "%A skip" c 
 

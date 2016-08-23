@@ -18,17 +18,17 @@ let main _ =
 
     let gameId = GameId 1
 
-    handle (StartGame { GameId = gameId; PlayerCount = 4; FirstCard = Digit(digit 3, Red)})
+    handle (StartGame { GameId = gameId; PlayerCount = 4; FirstCard = Digit(Three, Red)})
     
-    handle (PlayCard { GameId = gameId; Player = 0; Card = Digit(digit 3, Blue) })
+    handle (PlayCard { GameId = gameId; Player = 0; Card = Digit(Three, Blue) })
 
-    handle (PlayCard { GameId = gameId; Player = 1; Card = Digit(digit 8, Blue) })
+    handle (PlayCard { GameId = gameId; Player = 1; Card = Digit(Height, Blue) })
     
-    handle (PlayCard { GameId = gameId; Player = 2; Card = Digit(digit 8, Yellow) })
+    handle (PlayCard { GameId = gameId; Player = 2; Card = Digit(Height, Yellow) })
     
-    handle (PlayCard { GameId = gameId; Player = 3; Card = Digit(digit 4, Yellow) })
+    handle (PlayCard { GameId = gameId; Player = 3; Card = Digit(Four, Yellow) })
     
-    handle (PlayCard { GameId = gameId; Player = 0; Card = Digit(digit 4, Green) })
+    handle (PlayCard { GameId = gameId; Player = 0; Card = Digit(Four, Green) })
 
 
     System.Console.ReadLine() |> ignore

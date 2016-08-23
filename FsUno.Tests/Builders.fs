@@ -4,7 +4,7 @@ module FsUno.Tests.Builders
 open FsUno.Domain
 open Deck
 
-let red n = Digit(digit n, Red)
-let green n = Digit(digit n, Green)
-let blue n = Digit(digit n, Blue)
-let yellow n = Digit(digit n, Yellow)
+let red n = Digit(n, Red)
+let green n = Digit(n, Green)
+let blue n = Digit(n, Blue)
+let yellow n = Digit(n, Yellow)

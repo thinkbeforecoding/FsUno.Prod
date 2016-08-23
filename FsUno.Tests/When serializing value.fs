@@ -29,19 +29,19 @@ let deserialize<'a> converters s =
 
 [<Fact>]
 let ``a value should be serialized as its content``() =
-    let converters = [ valueConverter typeof<digit> ]
-
-    digit 7
-    |> serialize converters
-    |> should equal "7"
+    let converters = [ unionConverter ]
+    let result =
+        Seven 
+        |> serialize converters
+    result = "\"Seven\"" |> should be True
 
 [<Fact>]
 let ``a value should be deserialized from its content``() =
-    let converters = [ valueConverter typeof<digit> ]
+    let converters = [ unionConverter ]
     
-    "7"
-    |> deserialize<digit> converters
-    |> should equal (digit 7)
+    "\"Seven\""
+    |> deserialize<Digit> converters
+    |> should equal Seven
 
 [<Fact>]
 let ``a single case union should be serialized as its content``() =

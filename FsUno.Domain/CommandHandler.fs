@@ -25,7 +25,7 @@ module Game =
                 match nextEvent with
                 | None -> return lastEvent, state
                 | Some n -> return! fold state n }
-            fold State.initial 0
+            fold State.InitialState 0
 
         let save gameId expectedVersion events = 
             appendToStream (streamId gameId) expectedVersion events

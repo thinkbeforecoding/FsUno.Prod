@@ -13,20 +13,20 @@ let gameId = GameId 1
 [<Fact>]
 let ``Started game should be started``() =
     Given []
-    |> When ( StartGame { GameId = gameId; PlayerCount = 4; FirstCard = red 3 } )
-    |> Expect [ GameStarted { GameId = gameId; PlayerCount = 4; FirstCard = red 3; FirstPlayer = 0 } ]
+    |> When ( StartGame { GameId = gameId; PlayerCount = 4; FirstCard = red Three } )
+    |> Expect [ GameStarted { GameId = gameId; PlayerCount = 4; FirstCard = red Three; FirstPlayer = 0 } ]
 
 [<Fact>]
 let ``0 players should be rejected``() =
     Given []
-    |> When ( StartGame { GameId = gameId; PlayerCount = 0; FirstCard = red 3 } )
+    |> When ( StartGame { GameId = gameId; PlayerCount = 0; FirstCard = red Three } )
     |> ExpectThrows<ArgumentException>
 
 
 [<Fact>]
 let ``Game should not be started twice``() =
-    Given [GameStarted { GameId = gameId; PlayerCount = 4; FirstCard = red 3; FirstPlayer = 0 } ]
-    |> When ( StartGame { GameId = gameId; PlayerCount = 4; FirstCard = red 2 } )
+    Given [GameStarted { GameId = gameId; PlayerCount = 4; FirstCard = red Three; FirstPlayer = 0 } ]
+    |> When ( StartGame { GameId = gameId; PlayerCount = 4; FirstCard = red Two } )
     |> ExpectThrows<InvalidOperationException>
 
 [<Fact>]

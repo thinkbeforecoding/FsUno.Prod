@@ -82,16 +82,14 @@ type Turn = {
 
 // State
 
-type State = {
-    GameAlreadyStarted: bool
-    Turn: Turn
-    TopCard: Card }
-
-    with
-    static member initial = {
-        GameAlreadyStarted = false
-        Turn = Turn.empty
-        TopCard = Digit(digit 0,Red) }
+type State = 
+    | InitialState
+    | Started of Started
+    static member initial = InitialState
+and Started =
+    { Turn: Turn
+      TopCard: Card }
+    
 
 // Operations on the Game aggregate
 
@@ -110,51 +108,54 @@ let (|SameValue|_|) = function
 
 let startGame (command: StartGame) state =
     if command.PlayerCount <= 2 then invalidArg "playerCount" "There should be at least 3 players"
-    if state.GameAlreadyStarted then invalidOp "The game cannot be started more than once"
-    
-    let gameStarted firstPlayer = 
-        GameStarted { GameId = command.GameId
-                      PlayerCount = command.PlayerCount
-                      FirstCard = command.FirstCard
-                      FirstPlayer = firstPlayer }
- 
-    match command.FirstCard with
-    | KickBack _ ->
-        [ gameStarted 0 
-          DirectionChanged { GameId = command.GameId; Direction = CounterClockWise } ]
-    | Skip _ -> [ gameStarted 1 ]
-    | _ -> [ gameStarted 0]
+    match state with 
+    | Started _ -> invalidOp "The game cannot be started more than once"
+    | InitialState ->    
+        let gameStarted firstPlayer = 
+            GameStarted { GameId = command.GameId
+                          PlayerCount = command.PlayerCount
+                          FirstCard = command.FirstCard
+                          FirstPlayer = firstPlayer }
+     
+        match command.FirstCard with
+        | KickBack _ ->
+            [ gameStarted 0 
+              DirectionChanged { GameId = command.GameId; Direction = CounterClockWise } ]
+        | Skip _ -> [ gameStarted 1 ]
+        | _ -> [ gameStarted 0]
 
-let playCard (command: PlayCard) state =
-    if state.Turn.Player <> command.Player then 
-        [ PlayerPlayedAtWrongTurn { GameId = command.GameId
-                                    Player = command.Player
-                                    Card = command.Card } ]
-    else
-        match command.Card, state.TopCard with
-        | SameColor _ 
-        | SameValue ->
-            let cardPlayed nextPlayer = 
-                CardPlayed { GameId = command.GameId
-                             Player = command.Player
-                             Card = command.Card 
-                             NextPlayer = nextPlayer}
+let playCard (command: PlayCard) = function
+    | InitialState -> invalidOp "Game has not been started"
+    | Started state ->
+        if state.Turn.Player <> command.Player then 
+            [ PlayerPlayedAtWrongTurn { GameId = command.GameId
+                                        Player = command.Player
+                                        Card = command.Card } ]
+        else
+            match command.Card, state.TopCard with
+            | SameColor _ 
+            | SameValue ->
+                let cardPlayed nextPlayer = 
+                    CardPlayed { GameId = command.GameId
+                                 Player = command.Player
+                                 Card = command.Card 
+                                 NextPlayer = nextPlayer}
               
-            match command.Card with
-            | KickBack _ ->
-                let nextTurn = state.Turn.reverse.next
+                match command.Card with
+                | KickBack _ ->
+                    let nextTurn = state.Turn.reverse.next
 
-                [ cardPlayed nextTurn.Player
-                  DirectionChanged { GameId = command.GameId
-                                     Direction = nextTurn.Direction } ]
-            | Skip _ ->
-                let nextTurn = state.Turn.skip
+                    [ cardPlayed nextTurn.Player
+                      DirectionChanged { GameId = command.GameId
+                                         Direction = nextTurn.Direction } ]
+                | Skip _ ->
+                    let nextTurn = state.Turn.skip
 
-                [ cardPlayed nextTurn.Player ]
-            | _ -> 
-                let nextTurn = state.Turn.next
-                [ cardPlayed nextTurn.Player ]
-        | _ -> [ PlayerPlayedWrongCard { GameId = command.GameId; Player = command.Player; Card = command.Card} ] 
+                    [ cardPlayed nextTurn.Player ]
+                | _ -> 
+                    let nextTurn = state.Turn.next
+                    [ cardPlayed nextTurn.Player ]
+            | _ -> [ PlayerPlayedWrongCard { GameId = command.GameId; Player = command.Player; Card = command.Card} ] 
 
 // Map commands to aggregate operations
 
@@ -173,16 +174,24 @@ let gameId = function
 type State with
     static member apply state = function
         | GameStarted event -> 
-            { GameAlreadyStarted = true
+            Started { 
               Turn = Turn.start event.FirstPlayer event.PlayerCount 
               TopCard = event.FirstCard }
         | CardPlayed event ->
-            { state with
-                Turn = state.Turn.setPlayer event.NextPlayer
-                TopCard = event.Card }
+            match state with
+            | Started state ->
+                Started { 
+                    state with
+                        Turn = state.Turn.setPlayer event.NextPlayer
+                        TopCard = event.Card }
+            | _ -> invalidOp "Game should be started"
         | DirectionChanged event ->
-            { state with 
-                Turn = state.Turn.setDirection event.Direction }
+            match state with
+            | Started state ->
+                Started {
+                    state with 
+                        Turn = state.Turn.setDirection event.Direction }
+            | _ -> invalidOp "Game should be started"
         | PlayerPlayedAtWrongTurn _ 
         | PlayerPlayedWrongCard _ -> 
             state
