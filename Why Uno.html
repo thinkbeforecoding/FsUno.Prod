@@ -38,53 +38,37 @@
       <div class="row">
         <div class="span9" id="main">
           <h1>Why Uno</h1>
-
 <p><em>tldr; This is not about the 'grokking your domain' part of DDD. Here, the domain
 is already clear and defined by precise rules.
 I don't want to bloat the journey with questioning what the business is.
 Study <a href="http://ziobrando.blogspot.fr/2013/11/introducing-event-storming.html#.U-dALerlrX4">EventStorming</a> for that.</em></p>
-
 <h2>Choosing a sample domain</h2>
-
 <p>Choosing a sample domain is not a simple thing. I've made several attempts
 to select one in the past and failed miserably.</p>
-
 <h3>The case of the fake simplistic domain</h3>
-
 <p>It's hardly a domain at all, but it's easy to implement. It seems good at first
 to teach newcomers, but they rapidly spot that it's a toy domain that won't match
 their domain complexity. Experts will also point all the places where your model is
 weak in explaining important concepts.</p>
-
 <p>Failure.</p>
-
 <h3>The case of the real business domain</h3>
-
 <p>Here, the domain is a real world example, like finance, shipping, the hotel business and
 so on. People agree that it's interesting because it goes into real problems.</p>
-
 <p><strong>But then they start to argue about the business choices of the model.</strong>
 What happens when there is no product left to ship ? How do you deal with an overbooking ?</p>
-
 <p>These are legitimate questions that need to be asked when building a Business Plan, and
 there starts the drift from the actual goal here: <em>How to design and implement Functional Event Sourcing</em>.</p>
-
 <p>There are loads of people (including me) talking about this subject. Obviously Eric Evans'
 <a href="http://www.domaindrivendesign.org/">Domain Driven Design</a> book (especially the parts
 about Ubiquitous Language and knowledge crunching), but also the more recent technique
 of <a href="https://plus.google.com/communities/113258571348605620818">EventStorming</a> created by
 Alberto Brandolini and other DDD practitioners.</p>
-
 <h3>So what instead?</h3>
-
 <p>Choosing a game has a real advantage here: <strong>The rules already exist</strong>; No need to elicit
- them from the mind of Domain Experts, they're right there in the leaflet.</p>
-
+them from the mind of Domain Experts, they're right there in the leaflet.</p>
 <p>Is it a toy domain because it's a game ? Not really because when rules are rich enough
 to create interesting cases, it will match a real domain in a lot of aspects.</p>
-
 <p>I chose Uno because:</p>
-
 <ul>
 <li>Most people already know the rules</li>
 <li>Concurrency is a concern due to interruptions</li>
@@ -92,10 +76,8 @@ to create interesting cases, it will match a real domain in a lot of aspects.</p
 <li>It's sufficiently complex (with the proposed variant) to be interesting</li>
 <li>Yet its not <em>too</em> complex to be boring</li>
 </ul>
-
 <p>There still will be a lot of design decisions along the way, because even if the
 rules are already written, we still have to choose how to represent them in the system.</p>
-
 <p>And I'll write about these design decisions in this log...</p>
 
                     

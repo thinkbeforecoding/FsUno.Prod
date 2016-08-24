@@ -38,11 +38,274 @@
       <div class="row">
         <div class="span9" id="main">
           <h1>The Digit type and domain constraints</h1>
-
 <p><em>tldr; Model domain constraints inside types.
-Use exceptions for constraints that should be ensured by the system.</em></p>
+Use model constraints or exceptions for invariants that should be ensured
+at all time by the system.</em></p>
+<p><em>2016-08-24</em></p>
+<h2>Primitive obsession</h2>
+<p>There a several ways to model digits for this game, the simplest one is
+to use an integer.</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
+<span class="l">2: </span>
+<span class="l">3: </span>
+<span class="l">4: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp">    <span class="k">type</span> <span onmouseout="hideTip(event, 'fs7', 7)" onmouseover="showTip(event, 'fs7', 7)" class="t">Digit</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs8', 8)" onmouseover="showTip(event, 'fs8', 8)" class="t">int</span>
+    <span class="k">type</span> <span onmouseout="hideTip(event, 'fs9', 9)" onmouseover="showTip(event, 'fs9', 9)" class="t">Card</span> <span class="o">=</span> 
+        | <span onmouseout="hideTip(event, 'fs10', 10)" onmouseover="showTip(event, 'fs10', 10)" class="p">Digit</span> <span class="k">of</span> <span onmouseout="hideTip(event, 'fs10', 11)" onmouseover="showTip(event, 'fs10', 11)" class="t">Digit</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs2', 12)" onmouseover="showTip(event, 'fs2', 12)" class="t">Color</span>
+      <span class="c">//| ... other card types</span>
+</code></pre></td>
+</tr>
+</table>
+<p>It is quite flacky modeling.
+What would this represent ?</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
+<span class="l">2: </span>
+<span class="l">3: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp">    (<span class="n">10</span>,<span onmouseout="hideTip(event, 'fs5', 13)" onmouseover="showTip(event, 'fs5', 13)" class="p">Blue</span>) 
+    (<span onmouseout="hideTip(event, 'fs11', 14)" onmouseover="showTip(event, 'fs11', 14)" class="t">Int32</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs12', 15)" onmouseover="showTip(event, 'fs12', 15)" class="i">MaxValue</span>, <span onmouseout="hideTip(event, 'fs6', 16)" onmouseover="showTip(event, 'fs6', 16)" class="p">Yellow</span>)
+    (<span class="o">-</span><span class="n">3</span>, <span onmouseout="hideTip(event, 'fs4', 17)" onmouseover="showTip(event, 'fs4', 17)" class="p">Green</span>)
+</code></pre></td>
+</tr>
+</table>
+<p>It's such a recurrent smell it has a name: <a href="https://en.wikipedia.org/wiki/Design_smell">Primitive Obsession</a>.</p>
+<p>The main problem is that the code will have to check the validity of the value in various places.
+Any missed check leading to potential bugs and in some cases, security risks.</p>
+<p>The solution is to restrain the range of values from start, so that we don't have
+to think about it later.</p>
+<h2>Wrapping type</h2>
+<p>My second option was to wrap the value in a more specific type to avoid bogus values:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
+<span class="l">2: </span>
+<span class="l">3: </span>
+<span class="l">4: </span>
+<span class="l">5: </span>
+<span class="l">6: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp">    <span class="k">type</span> <span onmouseout="hideTip(event, 'fs13', 18)" onmouseover="showTip(event, 'fs13', 18)" class="t">Digit</span> <span class="o">=</span> <span class="k">private</span> <span onmouseout="hideTip(event, 'fs13', 19)" onmouseover="showTip(event, 'fs13', 19)" class="p">Digit</span> <span class="k">of</span> <span onmouseout="hideTip(event, 'fs8', 20)" onmouseover="showTip(event, 'fs8', 20)" class="t">int</span>
 
-                    
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs14', 21)" onmouseover="showTip(event, 'fs14', 21)" class="f">digit</span> <span onmouseout="hideTip(event, 'fs15', 22)" onmouseover="showTip(event, 'fs15', 22)" class="i">n</span> <span class="o">=</span>
+        <span class="k">if</span> <span onmouseout="hideTip(event, 'fs15', 23)" onmouseover="showTip(event, 'fs15', 23)" class="i">n</span> <span class="o">&lt;</span> <span class="n">0</span> <span class="o">||</span> <span onmouseout="hideTip(event, 'fs15', 24)" onmouseover="showTip(event, 'fs15', 24)" class="i">n</span> <span class="o">&gt;</span> <span class="n">9</span> <span class="k">then</span>
+            <span onmouseout="hideTip(event, 'fs16', 25)" onmouseover="showTip(event, 'fs16', 25)" class="f">invalidArg</span> <span class="s">&quot;n&quot;</span> <span class="s">&quot;Digit should be between 0 and 9.&quot;</span>
+        <span onmouseout="hideTip(event, 'fs13', 26)" onmouseover="showTip(event, 'fs13', 26)" class="p">Digit</span> <span onmouseout="hideTip(event, 'fs15', 27)" onmouseover="showTip(event, 'fs15', 27)" class="i">n</span>
+</code></pre></td>
+</tr>
+</table>
+<p>Now, once a digit value has been constructed, I'm sure it's valid.</p>
+<p>Far better.</p>
+<p>It's no real problem to use exception here. Functions that work on <code>Digit</code> can safely trust
+it has been build correctly, so no exception will be raised except in case of bugs. But in
+this case, you don't want to go any further - Stop the Press ! - and if you have plugged
+a bug reporter - and you should - you'll receive a notification. Then fix the bug and release.</p>
+<p>It's fine to raise exceptions for things that should not occure at all.</p>
+<p>The other place where it could happen is at the system boundary: input fields, APIs.</p>
+<p>For input fields, you should provide a field that restrict the user to enter valid input. In
+the digit case, a dropdown selector or even better, a list of clickable cards. It's a good way
+to guide the user into providing valid input.</p>
+<p>Another way is to provide a text field and using a try parse function:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+<span class="l">11: </span>
+<span class="l">12: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp">    <span class="k">type</span> <span onmouseout="hideTip(event, 'fs17', 28)" onmouseover="showTip(event, 'fs17', 28)" class="t">Result</span><span class="o">&lt;</span><span class="o">&#39;</span><span class="i">t</span>,<span class="o">&#39;</span><span class="i">e</span><span class="o">&gt;</span> <span class="o">=</span>
+        | <span onmouseout="hideTip(event, 'fs18', 29)" onmouseover="showTip(event, 'fs18', 29)" class="p">Ok</span> <span class="k">of</span> <span class="o">&#39;</span><span class="i">t</span>
+        | <span onmouseout="hideTip(event, 'fs19', 30)" onmouseover="showTip(event, 'fs19', 30)" class="p">Failure</span> <span class="k">of</span> <span class="o">&#39;</span><span class="i">e</span>
+
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs20', 31)" onmouseover="showTip(event, 'fs20', 31)" class="f">tryParse</span> <span onmouseout="hideTip(event, 'fs21', 32)" onmouseover="showTip(event, 'fs21', 32)" class="i">input</span> <span class="o">=</span>
+        <span class="k">match</span> <span onmouseout="hideTip(event, 'fs11', 33)" onmouseover="showTip(event, 'fs11', 33)" class="t">Int32</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs22', 34)" onmouseover="showTip(event, 'fs22', 34)" class="f">TryParse</span> <span onmouseout="hideTip(event, 'fs21', 35)" onmouseover="showTip(event, 'fs21', 35)" class="i">input</span> <span class="k">with</span>
+        | <span class="k">false</span>, _ <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs23', 36)" onmouseover="showTip(event, 'fs23', 36)" class="p">Failure</span> <span class="s">&quot;The value should be an integer&quot;</span>
+        | <span class="k">true</span>, <span onmouseout="hideTip(event, 'fs15', 37)" onmouseover="showTip(event, 'fs15', 37)" class="i">n</span> <span class="k">-&gt;</span>
+            <span class="k">if</span> <span onmouseout="hideTip(event, 'fs15', 38)" onmouseover="showTip(event, 'fs15', 38)" class="i">n</span> <span class="o">&lt;</span> <span class="n">0</span> <span class="o">||</span> <span onmouseout="hideTip(event, 'fs15', 39)" onmouseover="showTip(event, 'fs15', 39)" class="i">n</span> <span class="o">&gt;</span> <span class="n">9</span> <span class="k">then</span>
+                <span onmouseout="hideTip(event, 'fs23', 40)" onmouseover="showTip(event, 'fs23', 40)" class="p">Failure</span> <span class="s">&quot;The value should be between 0 and 9&quot;</span>
+            <span class="k">else</span>
+                <span onmouseout="hideTip(event, 'fs18', 41)" onmouseover="showTip(event, 'fs18', 41)" class="p">Ok</span> (<span onmouseout="hideTip(event, 'fs13', 42)" onmouseover="showTip(event, 'fs13', 42)" class="p">Digit</span> <span onmouseout="hideTip(event, 'fs15', 43)" onmouseover="showTip(event, 'fs15', 43)" class="i">n</span>)
+</code></pre></td>
+</tr>
+</table>
+<p>Any way, even if you propose a restricted set of values, never assume the client sent a valid input.
+Always check the value at input point using the <code>digit</code> constructor function.</p>
+<h2>Even more restrictive</h2>
+<p>In the case of Uno, the value of the card is almost never used for its value, cards just have
+to be of equal value. It could as well be drawings like <code>Square</code>, <code>Circle</code>, <code>Star</code>...</p>
+<p>In this case the type would probably modeled as:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
+<span class="l">2: </span>
+<span class="l">3: </span>
+<span class="l">4: </span>
+<span class="l">5: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp">    <span class="k">type</span> <span onmouseout="hideTip(event, 'fs24', 44)" onmouseover="showTip(event, 'fs24', 44)" class="t">Drawing</span> <span class="o">=</span>
+        | <span onmouseout="hideTip(event, 'fs25', 45)" onmouseover="showTip(event, 'fs25', 45)" class="p">Square</span>
+        | <span onmouseout="hideTip(event, 'fs26', 46)" onmouseover="showTip(event, 'fs26', 46)" class="p">Circle</span>
+        | <span onmouseout="hideTip(event, 'fs27', 47)" onmouseover="showTip(event, 'fs27', 47)" class="p">Star</span>
+    <span class="c">//  | ... other drawings</span>
+</code></pre></td>
+</tr>
+</table>
+<p>This type works perfectly for equality. Enough for me.</p>
+<p>And it adds a futher constraint:
+I cannot not represent at compile time an invalid value.</p>
+<p>The previous version allowed me to write <code>digit -3</code>, which will fail at runtime, but will compile.
+So I'll need unit tests to validate the <code>digit</code> constructor function. And hope that no one will do
+something foolish in the code that will result in <code>digit n</code> where n doen's pass the check.</p>
+<p>With the following version, it's just not possible:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+<span class="l">11: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="k">type</span> <span onmouseout="hideTip(event, 'fs28', 48)" onmouseover="showTip(event, 'fs28', 48)" class="t">Digit</span> <span class="o">=</span>
+    | <span onmouseout="hideTip(event, 'fs29', 49)" onmouseover="showTip(event, 'fs29', 49)" class="p">Zero</span>
+    | <span onmouseout="hideTip(event, 'fs30', 50)" onmouseover="showTip(event, 'fs30', 50)" class="p">One</span>
+    | <span onmouseout="hideTip(event, 'fs31', 51)" onmouseover="showTip(event, 'fs31', 51)" class="p">Two</span>
+    | <span onmouseout="hideTip(event, 'fs32', 52)" onmouseover="showTip(event, 'fs32', 52)" class="p">Three</span>
+    | <span onmouseout="hideTip(event, 'fs33', 53)" onmouseover="showTip(event, 'fs33', 53)" class="p">Four</span>
+    | <span onmouseout="hideTip(event, 'fs34', 54)" onmouseover="showTip(event, 'fs34', 54)" class="p">Five</span>
+    | <span onmouseout="hideTip(event, 'fs35', 55)" onmouseover="showTip(event, 'fs35', 55)" class="p">Six</span>
+    | <span onmouseout="hideTip(event, 'fs36', 56)" onmouseover="showTip(event, 'fs36', 56)" class="p">Seven</span>
+    | <span onmouseout="hideTip(event, 'fs37', 57)" onmouseover="showTip(event, 'fs37', 57)" class="p">Height</span>
+    | <span onmouseout="hideTip(event, 'fs38', 58)" onmouseover="showTip(event, 'fs38', 58)" class="p">Nine</span>
+</code></pre></td>
+</tr>
+</table>
+<p>There is a single place where I'll need validation. When parsing it on the boundary,
+which is usually done inside deserialization:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs40', 62)" onmouseover="showTip(event, 'fs40', 62)" class="i">cases</span> <span class="o">=</span> 
+    [ <span onmouseout="hideTip(event, 'fs29', 63)" onmouseover="showTip(event, 'fs29', 63)" class="p">Zero</span>; <span onmouseout="hideTip(event, 'fs30', 64)" onmouseover="showTip(event, 'fs30', 64)" class="p">One</span>; <span onmouseout="hideTip(event, 'fs31', 65)" onmouseover="showTip(event, 'fs31', 65)" class="p">Two</span>;   <span onmouseout="hideTip(event, 'fs32', 66)" onmouseover="showTip(event, 'fs32', 66)" class="p">Three</span>;  <span onmouseout="hideTip(event, 'fs33', 67)" onmouseover="showTip(event, 'fs33', 67)" class="p">Four</span>
+      <span onmouseout="hideTip(event, 'fs34', 68)" onmouseover="showTip(event, 'fs34', 68)" class="p">Five</span>; <span onmouseout="hideTip(event, 'fs35', 69)" onmouseover="showTip(event, 'fs35', 69)" class="p">Six</span>; <span onmouseout="hideTip(event, 'fs36', 70)" onmouseover="showTip(event, 'fs36', 70)" class="p">Seven</span>; <span onmouseout="hideTip(event, 'fs37', 71)" onmouseover="showTip(event, 'fs37', 71)" class="p">Height</span>; <span onmouseout="hideTip(event, 'fs38', 72)" onmouseover="showTip(event, 'fs38', 72)" class="p">Nine</span> ]
+    <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs41', 73)" onmouseover="showTip(event, 'fs41', 73)" class="t">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs42', 74)" onmouseover="showTip(event, 'fs42', 74)" class="f">map</span> (<span class="k">fun</span> <span onmouseout="hideTip(event, 'fs43', 75)" onmouseover="showTip(event, 'fs43', 75)" class="i">d</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs44', 76)" onmouseover="showTip(event, 'fs44', 76)" class="f">sprintf</span> <span class="s">&quot;</span><span class="pf">%A</span><span class="s">&quot;</span> <span onmouseout="hideTip(event, 'fs43', 77)" onmouseover="showTip(event, 'fs43', 77)" class="i">d</span>, <span onmouseout="hideTip(event, 'fs43', 78)" onmouseover="showTip(event, 'fs43', 78)" class="i">d</span>)
+    <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs45', 79)" onmouseover="showTip(event, 'fs45', 79)" class="t">Map</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs46', 80)" onmouseover="showTip(event, 'fs46', 80)" class="f">ofList</span>
+    
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs47', 81)" onmouseover="showTip(event, 'fs47', 81)" class="f">tryParse</span> <span onmouseout="hideTip(event, 'fs21', 82)" onmouseover="showTip(event, 'fs21', 82)" class="i">input</span> <span class="o">=</span>
+    <span class="k">match</span> <span onmouseout="hideTip(event, 'fs45', 83)" onmouseover="showTip(event, 'fs45', 83)" class="t">Map</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs48', 84)" onmouseover="showTip(event, 'fs48', 84)" class="f">tryFind</span> <span onmouseout="hideTip(event, 'fs21', 85)" onmouseover="showTip(event, 'fs21', 85)" class="i">input</span> <span onmouseout="hideTip(event, 'fs40', 86)" onmouseover="showTip(event, 'fs40', 86)" class="i">cases</span> <span class="k">with</span>
+    | <span onmouseout="hideTip(event, 'fs49', 87)" onmouseover="showTip(event, 'fs49', 87)" class="p">Some</span> <span onmouseout="hideTip(event, 'fs50', 88)" onmouseover="showTip(event, 'fs50', 88)" class="i">digit</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs18', 89)" onmouseover="showTip(event, 'fs18', 89)" class="p">Ok</span> <span onmouseout="hideTip(event, 'fs50', 90)" onmouseover="showTip(event, 'fs50', 90)" class="i">digit</span>
+    | <span onmouseout="hideTip(event, 'fs51', 91)" onmouseover="showTip(event, 'fs51', 91)" class="p">None</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs23', 92)" onmouseover="showTip(event, 'fs23', 92)" class="p">Failure</span> <span class="s">&quot;Unknown digit&quot;</span>
+</code></pre></td>
+</tr>
+</table>
+<p>We can the try:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
+<span class="l">2: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span onmouseout="hideTip(event, 'fs47', 93)" onmouseover="showTip(event, 'fs47', 93)" class="f">tryParse</span> <span class="s">&quot;Seven&quot;</span> <span class="c">// returns Ok Seven</span>
+<span onmouseout="hideTip(event, 'fs47', 94)" onmouseover="showTip(event, 'fs47', 94)" class="f">tryParse</span> <span class="s">&quot;Bogus&quot;</span> <span class="c">// returns Failure &quot;Unknown digit&quot;</span>
+</code></pre></td>
+</tr>
+</table>
+<p>The only place where the actual value is needed is for score, where a simple function is needed:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+<span class="l">11: </span>
+<span class="l">12: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs52', 95)" onmouseover="showTip(event, 'fs52', 95)" class="f">score</span> <span onmouseout="hideTip(event, 'fs50', 96)" onmouseover="showTip(event, 'fs50', 96)" class="i">digit</span> <span class="o">=</span>
+    <span class="k">match</span> <span onmouseout="hideTip(event, 'fs50', 97)" onmouseover="showTip(event, 'fs50', 97)" class="i">digit</span> <span class="k">with</span>
+    | <span onmouseout="hideTip(event, 'fs29', 98)" onmouseover="showTip(event, 'fs29', 98)" class="p">Zero</span>   <span class="k">-&gt;</span> <span class="n">0</span>
+    | <span onmouseout="hideTip(event, 'fs30', 99)" onmouseover="showTip(event, 'fs30', 99)" class="p">One</span>    <span class="k">-&gt;</span> <span class="n">1</span>
+    | <span onmouseout="hideTip(event, 'fs31', 100)" onmouseover="showTip(event, 'fs31', 100)" class="p">Two</span>    <span class="k">-&gt;</span> <span class="n">2</span>
+    | <span onmouseout="hideTip(event, 'fs32', 101)" onmouseover="showTip(event, 'fs32', 101)" class="p">Three</span>  <span class="k">-&gt;</span> <span class="n">3</span>
+    | <span onmouseout="hideTip(event, 'fs33', 102)" onmouseover="showTip(event, 'fs33', 102)" class="p">Four</span>   <span class="k">-&gt;</span> <span class="n">4</span>
+    | <span onmouseout="hideTip(event, 'fs34', 103)" onmouseover="showTip(event, 'fs34', 103)" class="p">Five</span>   <span class="k">-&gt;</span> <span class="n">5</span>
+    | <span onmouseout="hideTip(event, 'fs35', 104)" onmouseover="showTip(event, 'fs35', 104)" class="p">Six</span>    <span class="k">-&gt;</span> <span class="n">6</span>
+    | <span onmouseout="hideTip(event, 'fs36', 105)" onmouseover="showTip(event, 'fs36', 105)" class="p">Seven</span>  <span class="k">-&gt;</span> <span class="n">7</span>
+    | <span onmouseout="hideTip(event, 'fs37', 106)" onmouseover="showTip(event, 'fs37', 106)" class="p">Height</span> <span class="k">-&gt;</span> <span class="n">8</span>
+    | <span onmouseout="hideTip(event, 'fs38', 107)" onmouseover="showTip(event, 'fs38', 107)" class="p">Nine</span>   <span class="k">-&gt;</span> <span class="n">9</span>
+</code></pre></td>
+</tr>
+</table>
+<p>The pattern matching is a total match, so we're sure we missed no case.</p>
+<p>Of course, for bigger enumerations, like value between 1 and 100, the wrapping type is probably
+a better option.</p>
+
+          <div class="tip" id="fs1">namespace System</div>
+<div class="tip" id="fs2">type Color =<br />&#160;&#160;| Red<br />&#160;&#160;| Green<br />&#160;&#160;| Blue<br />&#160;&#160;| Yellow<br /><br />Full name: The Digit type.Color</div>
+<div class="tip" id="fs3">union case Color.Red: Color</div>
+<div class="tip" id="fs4">union case Color.Green: Color</div>
+<div class="tip" id="fs5">union case Color.Blue: Color</div>
+<div class="tip" id="fs6">union case Color.Yellow: Color</div>
+<div class="tip" id="fs7">type Digit = int<br /><br />Full name: The Digit type.WithIntegers.Digit</div>
+<div class="tip" id="fs8">Multiple items<br />val int : value:&#39;T -&gt; int (requires member op_Explicit)<br /><br />Full name: Microsoft.FSharp.Core.Operators.int<br /><br />--------------------<br />type int = int32<br /><br />Full name: Microsoft.FSharp.Core.int<br /><br />--------------------<br />type int&lt;&#39;Measure&gt; = int<br /><br />Full name: Microsoft.FSharp.Core.int&lt;_&gt;</div>
+<div class="tip" id="fs9">type Card = | Digit of Digit * Color<br /><br />Full name: The Digit type.WithIntegers.Card</div>
+<div class="tip" id="fs10">Multiple items<br />union case Card.Digit: Digit * Color -&gt; Card<br /><br />--------------------<br />type Digit = int<br /><br />Full name: The Digit type.WithIntegers.Digit</div>
+<div class="tip" id="fs11">type Int32 =<br />&#160;&#160;struct<br />&#160;&#160;&#160;&#160;member CompareTo : value:obj -&gt; int + 1 overload<br />&#160;&#160;&#160;&#160;member Equals : obj:obj -&gt; bool + 1 overload<br />&#160;&#160;&#160;&#160;member GetHashCode : unit -&gt; int<br />&#160;&#160;&#160;&#160;member GetTypeCode : unit -&gt; TypeCode<br />&#160;&#160;&#160;&#160;member ToString : unit -&gt; string + 3 overloads<br />&#160;&#160;&#160;&#160;static val MaxValue : int<br />&#160;&#160;&#160;&#160;static val MinValue : int<br />&#160;&#160;&#160;&#160;static member Parse : s:string -&gt; int + 3 overloads<br />&#160;&#160;&#160;&#160;static member TryParse : s:string * result:int -&gt; bool + 1 overload<br />&#160;&#160;end<br /><br />Full name: System.Int32</div>
+<div class="tip" id="fs12">field int.MaxValue = 2147483647</div>
+<div class="tip" id="fs13">Multiple items<br />union case Digit.Digit: int -&gt; Digit<br /><br />--------------------<br />type Digit = private | Digit of int<br /><br />Full name: The Digit type.WrappingType.Digit</div>
+<div class="tip" id="fs14">val digit : n:int -&gt; Digit<br /><br />Full name: The Digit type.WrappingType.digit</div>
+<div class="tip" id="fs15">val n : int</div>
+<div class="tip" id="fs16">val invalidArg : argumentName:string -&gt; message:string -&gt; &#39;T<br /><br />Full name: Microsoft.FSharp.Core.Operators.invalidArg</div>
+<div class="tip" id="fs17">type Result&lt;&#39;t,&#39;e&gt; =<br />&#160;&#160;| Ok of &#39;t<br />&#160;&#160;| Failure of &#39;e<br /><br />Full name: The Digit type.WrappingType.Result&lt;_,_&gt;</div>
+<div class="tip" id="fs18">union case Result.Ok: &#39;t -&gt; Result&lt;&#39;t,&#39;e&gt;</div>
+<div class="tip" id="fs19">Multiple items<br />union case Result.Failure: &#39;e -&gt; Result&lt;&#39;t,&#39;e&gt;<br /><br />--------------------<br />active recognizer Failure: exn -&gt; string option<br /><br />Full name: Microsoft.FSharp.Core.Operators.( |Failure|_| )</div>
+<div class="tip" id="fs20">val tryParse : input:string -&gt; Result&lt;Digit,string&gt;<br /><br />Full name: The Digit type.WrappingType.tryParse</div>
+<div class="tip" id="fs21">val input : string</div>
+<div class="tip" id="fs22">Int32.TryParse(s: string, result: byref&lt;int&gt;) : bool<br />Int32.TryParse(s: string, style: Globalization.NumberStyles, provider: IFormatProvider, result: byref&lt;int&gt;) : bool</div>
+<div class="tip" id="fs23">union case Result.Failure: &#39;e -&gt; Result&lt;&#39;t,&#39;e&gt;</div>
+<div class="tip" id="fs24">Multiple items<br />namespace System.Drawing<br /><br />--------------------<br />type Drawing =<br />&#160;&#160;| Square<br />&#160;&#160;| Circle<br />&#160;&#160;| Star<br /><br />Full name: The Digit type.Drawings.Drawing</div>
+<div class="tip" id="fs25">union case Drawing.Square: Drawing</div>
+<div class="tip" id="fs26">union case Drawing.Circle: Drawing</div>
+<div class="tip" id="fs27">union case Drawing.Star: Drawing</div>
+<div class="tip" id="fs28">type Digit =<br />&#160;&#160;| Zero<br />&#160;&#160;| One<br />&#160;&#160;| Two<br />&#160;&#160;| Three<br />&#160;&#160;| Four<br />&#160;&#160;| Five<br />&#160;&#160;| Six<br />&#160;&#160;| Seven<br />&#160;&#160;| Height<br />&#160;&#160;| Nine<br /><br />Full name: The Digit type.Digit</div>
+<div class="tip" id="fs29">union case Digit.Zero: Digit</div>
+<div class="tip" id="fs30">union case Digit.One: Digit</div>
+<div class="tip" id="fs31">union case Digit.Two: Digit</div>
+<div class="tip" id="fs32">union case Digit.Three: Digit</div>
+<div class="tip" id="fs33">union case Digit.Four: Digit</div>
+<div class="tip" id="fs34">union case Digit.Five: Digit</div>
+<div class="tip" id="fs35">union case Digit.Six: Digit</div>
+<div class="tip" id="fs36">union case Digit.Seven: Digit</div>
+<div class="tip" id="fs37">union case Digit.Height: Digit</div>
+<div class="tip" id="fs38">union case Digit.Nine: Digit</div>
+<div class="tip" id="fs39">type Result&lt;&#39;t,&#39;e&gt; =<br />&#160;&#160;| Ok of &#39;t<br />&#160;&#160;| Failure of &#39;e<br /><br />Full name: The Digit type.Result&lt;_,_&gt;</div>
+<div class="tip" id="fs40">val cases : Map&lt;string,Digit&gt;<br /><br />Full name: The Digit type.cases</div>
+<div class="tip" id="fs41">Multiple items<br />module List<br /><br />from Microsoft.FSharp.Collections<br /><br />--------------------<br />type List&lt;&#39;T&gt; =<br />&#160;&#160;| ( [] )<br />&#160;&#160;| ( :: ) of Head: &#39;T * Tail: &#39;T list<br />&#160;&#160;interface IEnumerable<br />&#160;&#160;interface IEnumerable&lt;&#39;T&gt;<br />&#160;&#160;member GetSlice : startIndex:int option * endIndex:int option -&gt; &#39;T list<br />&#160;&#160;member Head : &#39;T<br />&#160;&#160;member IsEmpty : bool<br />&#160;&#160;member Item : index:int -&gt; &#39;T with get<br />&#160;&#160;member Length : int<br />&#160;&#160;member Tail : &#39;T list<br />&#160;&#160;static member Cons : head:&#39;T * tail:&#39;T list -&gt; &#39;T list<br />&#160;&#160;static member Empty : &#39;T list<br /><br />Full name: Microsoft.FSharp.Collections.List&lt;_&gt;</div>
+<div class="tip" id="fs42">val map : mapping:(&#39;T -&gt; &#39;U) -&gt; list:&#39;T list -&gt; &#39;U list<br /><br />Full name: Microsoft.FSharp.Collections.List.map</div>
+<div class="tip" id="fs43">val d : Digit</div>
+<div class="tip" id="fs44">val sprintf : format:Printf.StringFormat&lt;&#39;T&gt; -&gt; &#39;T<br /><br />Full name: Microsoft.FSharp.Core.ExtraTopLevelOperators.sprintf</div>
+<div class="tip" id="fs45">Multiple items<br />module Map<br /><br />from Microsoft.FSharp.Collections<br /><br />--------------------<br />type Map&lt;&#39;Key,&#39;Value (requires comparison)&gt; =<br />&#160;&#160;interface IEnumerable<br />&#160;&#160;interface IComparable<br />&#160;&#160;interface IEnumerable&lt;KeyValuePair&lt;&#39;Key,&#39;Value&gt;&gt;<br />&#160;&#160;interface ICollection&lt;KeyValuePair&lt;&#39;Key,&#39;Value&gt;&gt;<br />&#160;&#160;interface IDictionary&lt;&#39;Key,&#39;Value&gt;<br />&#160;&#160;new : elements:seq&lt;&#39;Key * &#39;Value&gt; -&gt; Map&lt;&#39;Key,&#39;Value&gt;<br />&#160;&#160;member Add : key:&#39;Key * value:&#39;Value -&gt; Map&lt;&#39;Key,&#39;Value&gt;<br />&#160;&#160;member ContainsKey : key:&#39;Key -&gt; bool<br />&#160;&#160;override Equals : obj -&gt; bool<br />&#160;&#160;member Remove : key:&#39;Key -&gt; Map&lt;&#39;Key,&#39;Value&gt;<br />&#160;&#160;...<br /><br />Full name: Microsoft.FSharp.Collections.Map&lt;_,_&gt;<br /><br />--------------------<br />new : elements:seq&lt;&#39;Key * &#39;Value&gt; -&gt; Map&lt;&#39;Key,&#39;Value&gt;</div>
+<div class="tip" id="fs46">val ofList : elements:(&#39;Key * &#39;T) list -&gt; Map&lt;&#39;Key,&#39;T&gt; (requires comparison)<br /><br />Full name: Microsoft.FSharp.Collections.Map.ofList</div>
+<div class="tip" id="fs47">val tryParse : input:string -&gt; Result&lt;Digit,string&gt;<br /><br />Full name: The Digit type.tryParse</div>
+<div class="tip" id="fs48">val tryFind : key:&#39;Key -&gt; table:Map&lt;&#39;Key,&#39;T&gt; -&gt; &#39;T option (requires comparison)<br /><br />Full name: Microsoft.FSharp.Collections.Map.tryFind</div>
+<div class="tip" id="fs49">union case Option.Some: Value: &#39;T -&gt; Option&lt;&#39;T&gt;</div>
+<div class="tip" id="fs50">val digit : Digit</div>
+<div class="tip" id="fs51">union case Option.None: Option&lt;&#39;T&gt;</div>
+<div class="tip" id="fs52">val score : digit:Digit -&gt; int<br /><br />Full name: The Digit type.score</div>
+          
         </div>
         <div class="span3">
 

@@ -38,40 +38,27 @@
       <div class="row">
         <div class="span9" id="main">
           <h1>Why F# ?</h1>
-
 <p><em>tldr; I wanted to implement Functional Event Sourcing, and needed a functional language for this.</em>
 <em>F#'s DSL oriented syntax proved useful on the way.</em></p>
-
 <h2>Event Sourcing</h2>
-
 <p>Back in 2008, this thing called event sourcing started to draw my attention as
 I started to feel the limits of doing Domain Driven Design using an ORM.</p>
-
 <p>Discussion after discussion on the <a href="http://groups.yahoo.com/group/domaindrivendesign">DDD yahoo group</a>
 with Greg Young and others; things started to make sense. But a lot of points remained
 a bit fuzzy.</p>
-
 <p>Taking Greg's course in Paris made all this a lot clearer, but still I was not
 totally comfortable with the implementation. I put a first attempt in production
 and it's still running, but I was not totally OK with the result.</p>
-
 <p>Then I met Rinat Abdullin, and we created <a href="https://twitter.com/hashtag/cqrsbeers">#cqrsbeers</a> in Paris.
 Rinat had a wonderfuly efficient implementation of <a href="https://github.com/Lokad/lokad-cqrs">Event Sourcing in C# locally or on Azure</a>
 open sourced from the company he was working in at that time.</p>
-
 <p>It was lean and mean, very inspiring, in production; and yet it was not enough.</p>
-
 <h2>Functional Event Sourcing</h2>
-
 <p>Then at Skillsmatter's DDDx 2013, Greg did a presentation about <a href="https://skillsmatter.com/skillscasts/3191-ddd-functional-programming">DDD Functional Programming</a>.
 I was starting to learn F# at that time, and here things matched perfectly.</p>
-
 <p>Functional event sourcing is defined around two functions:</p>
-
 <p>The first one is in charge of deciding what's happening:</p>
-
-<table class="pre"><tr><td class="lines"><pre class="fssnip">
-<span class="l"> 1: </span>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l"> 1: </span>
 <span class="l"> 2: </span>
 <span class="l"> 3: </span>
 <span class="l"> 4: </span>
@@ -82,115 +69,78 @@ I was starting to learn F# at that time, and here things matched perfectly.</p>
 <span class="l"> 9: </span>
 <span class="l">10: </span>
 <span class="l">11: </span>
-</pre>
-</td>
-<td class="snippet"><pre class="fssnip">
-<span class="k">type</span> <span onmouseout="hideTip(event, 'fs4', 4)" onmouseover="showTip(event, 'fs4', 4)" class="i">Command</span> <span class="o">=</span> | <span onmouseout="hideTip(event, 'fs5', 5)" onmouseover="showTip(event, 'fs5', 5)" class="i">DoSomething</span> 
-<span class="k">type</span> <span onmouseout="hideTip(event, 'fs6', 6)" onmouseover="showTip(event, 'fs6', 6)" class="i">Event</span> <span class="o">=</span> | <span onmouseout="hideTip(event, 'fs7', 7)" onmouseover="showTip(event, 'fs7', 7)" class="i">SomethingHappened</span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="k">type</span> <span onmouseout="hideTip(event, 'fs4', 4)" onmouseover="showTip(event, 'fs4', 4)" class="t">Command</span> <span class="o">=</span> | <span onmouseout="hideTip(event, 'fs5', 5)" onmouseover="showTip(event, 'fs5', 5)" class="p">DoSomething</span> 
+<span class="k">type</span> <span onmouseout="hideTip(event, 'fs6', 6)" onmouseover="showTip(event, 'fs6', 6)" class="t">Event</span> <span class="o">=</span> | <span onmouseout="hideTip(event, 'fs7', 7)" onmouseover="showTip(event, 'fs7', 7)" class="p">SomethingHappened</span>
 
-<span class="k">let</span> <span onmouseout="hideTip(event, 'fs8', 8)" onmouseover="showTip(event, 'fs8', 8)" class="i">decide</span> <span onmouseout="hideTip(event, 'fs9', 9)" onmouseover="showTip(event, 'fs9', 9)" class="i">state</span> <span onmouseout="hideTip(event, 'fs10', 10)" onmouseover="showTip(event, 'fs10', 10)" class="i">command</span> <span class="o">=</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs8', 8)" onmouseover="showTip(event, 'fs8', 8)" class="f">decide</span> <span onmouseout="hideTip(event, 'fs9', 9)" onmouseover="showTip(event, 'fs9', 9)" class="i">state</span> <span onmouseout="hideTip(event, 'fs10', 10)" onmouseover="showTip(event, 'fs10', 10)" class="i">command</span> <span class="o">=</span>
     <span class="k">match</span> <span onmouseout="hideTip(event, 'fs10', 11)" onmouseover="showTip(event, 'fs10', 11)" class="i">command</span> <span class="k">with</span>
-    | <span onmouseout="hideTip(event, 'fs5', 12)" onmouseover="showTip(event, 'fs5', 12)" class="i">DoSomething</span> <span class="k">-&gt;</span>
-        <span class="k">if</span> <span onmouseout="hideTip(event, 'fs9', 13)" onmouseover="showTip(event, 'fs9', 13)" class="i">state</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs1', 14)" onmouseover="showTip(event, 'fs1', 14)" class="i">MyCurrentState</span> <span class="o">=</span> <span class="s">&quot;</span><span class="s">.</span><span class="s">.</span><span class="s">.</span><span class="s">&quot;</span> <span class="k">then</span> ()
+    | <span onmouseout="hideTip(event, 'fs5', 12)" onmouseover="showTip(event, 'fs5', 12)" class="p">DoSomething</span> <span class="k">-&gt;</span>
+        <span class="k">if</span> <span onmouseout="hideTip(event, 'fs9', 13)" onmouseover="showTip(event, 'fs9', 13)" class="i">state</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs1', 14)" onmouseover="showTip(event, 'fs1', 14)" class="i">MyCurrentState</span> <span class="o">=</span> <span class="s">&quot;...&quot;</span> <span class="k">then</span> ()
             <span class="c">// take some decision based on the command and</span>
             <span class="c">// the current state and return events that should</span>
             <span class="c">// result in this case</span>
-        [ <span onmouseout="hideTip(event, 'fs7', 15)" onmouseover="showTip(event, 'fs7', 15)" class="i">SomethingHappened</span> ] </pre>
-</td>
+        [ <span onmouseout="hideTip(event, 'fs7', 15)" onmouseover="showTip(event, 'fs7', 15)" class="p">SomethingHappened</span> ] 
+</code></pre></td>
 </tr>
 </table>
-
 <p>Simple enough, and with immutable values, decide is a pure function without
 side effects.</p>
-
 <p>Its signature indicates it's meaning:</p>
-
-<table class="pre"><tr><td class="lines"><pre class="fssnip">
-<span class="l">1: </span>
-</pre>
-</td>
-<td class="snippet"><pre class="fssnip">
-<span class="i">State</span> <span class="k">-&gt;</span> <span class="i">Command</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs11', 16)" onmouseover="showTip(event, 'fs11', 16)" class="i">Event</span> <span onmouseout="hideTip(event, 'fs12', 17)" onmouseover="showTip(event, 'fs12', 17)" class="i">list</span></pre>
-</td>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="i">State</span> <span class="k">-&gt;</span> <span class="i">Command</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs11', 16)" onmouseover="showTip(event, 'fs11', 16)" class="i">Event</span> <span onmouseout="hideTip(event, 'fs12', 17)" onmouseover="showTip(event, 'fs12', 17)" class="i">list</span>
+</code></pre></td>
 </tr>
 </table>
-
 <p>can be read as <strong>given my current state and what you ask me to do, here is what happens</strong>.</p>
-
 <p>This is something that had always bugged me with OO Event Sourcing; you have to
 be careful not to mutate your state before building your events. But nothing
 prevents you from doing so and shooting yourself in the foot.</p>
-
 <p>Then comes the event application function.</p>
-
-<table class="pre"><tr><td class="lines"><pre class="fssnip">
-<span class="l">1: </span>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
 <span class="l">2: </span>
 <span class="l">3: </span>
 <span class="l">4: </span>
-</pre>
-</td>
-<td class="snippet"><pre class="fssnip">
-<span class="k">let</span> <span onmouseout="hideTip(event, 'fs13', 18)" onmouseover="showTip(event, 'fs13', 18)" class="i">apply</span> <span onmouseout="hideTip(event, 'fs9', 19)" onmouseover="showTip(event, 'fs9', 19)" class="i">state</span> <span onmouseout="hideTip(event, 'fs14', 20)" onmouseover="showTip(event, 'fs14', 20)" class="i">event</span> <span class="o">=</span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs13', 18)" onmouseover="showTip(event, 'fs13', 18)" class="f">apply</span> <span onmouseout="hideTip(event, 'fs9', 19)" onmouseover="showTip(event, 'fs9', 19)" class="i">state</span> <span onmouseout="hideTip(event, 'fs14', 20)" onmouseover="showTip(event, 'fs14', 20)" class="i">event</span> <span class="o">=</span>
     <span class="k">match</span> <span onmouseout="hideTip(event, 'fs14', 21)" onmouseover="showTip(event, 'fs14', 21)" class="i">event</span> <span class="k">with</span>
-    | <span onmouseout="hideTip(event, 'fs7', 22)" onmouseover="showTip(event, 'fs7', 22)" class="i">SomethingHappened</span> <span class="k">-&gt;</span>
-        { <span onmouseout="hideTip(event, 'fs9', 23)" onmouseover="showTip(event, 'fs9', 23)" class="i">state</span> <span class="k">with</span> <span class="i">MyCurrentState</span> <span class="o">=</span> <span class="s">&quot;</span><span class="s">something</span><span class="s"> </span><span class="s">derived</span><span class="s"> </span><span class="s">from</span><span class="s"> </span><span class="s">event</span><span class="s"> </span><span class="s">content</span><span class="s">&quot;</span> }</pre>
-</td>
+    | <span onmouseout="hideTip(event, 'fs7', 22)" onmouseover="showTip(event, 'fs7', 22)" class="p">SomethingHappened</span> <span class="k">-&gt;</span>
+        { <span onmouseout="hideTip(event, 'fs9', 23)" onmouseover="showTip(event, 'fs9', 23)" class="i">state</span> <span class="k">with</span> <span class="i">MyCurrentState</span> <span class="o">=</span> <span class="s">&quot;something derived from event content&quot;</span> }
+</code></pre></td>
 </tr>
 </table>
-
 <p>Here again, a pure function without side effects.</p>
-
 <p>The signature is :</p>
-
-<table class="pre"><tr><td class="lines"><pre class="fssnip">
-<span class="l">1: </span>
-</pre>
-</td>
-<td class="snippet"><pre class="fssnip">
-<span class="i">State</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs11', 24)" onmouseover="showTip(event, 'fs11', 24)" class="i">Event</span> <span class="k">-&gt;</span> <span class="i">State</span></pre>
-</td>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="i">State</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs11', 24)" onmouseover="showTip(event, 'fs11', 24)" class="i">Event</span> <span class="k">-&gt;</span> <span class="i">State</span>
+</code></pre></td>
 </tr>
 </table>
-
 <p>and can be read as <strong>given my current state and what happened, here is my new state</strong></p>
-
 <p>No risk of corruption of internal state if something bad happens during processing; all is
 immutable.</p>
-
 <p>And rebuilding the current state is as easy as</p>
-
-<table class="pre"><tr><td class="lines"><pre class="fssnip">
-<span class="l">1: </span>
-</pre>
-</td>
-<td class="snippet"><pre class="fssnip">
-<span class="k">let</span> <span onmouseout="hideTip(event, 'fs15', 25)" onmouseover="showTip(event, 'fs15', 25)" class="i">replay</span> <span onmouseout="hideTip(event, 'fs16', 26)" onmouseover="showTip(event, 'fs16', 26)" class="i">events</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs17', 27)" onmouseover="showTip(event, 'fs17', 27)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs18', 28)" onmouseover="showTip(event, 'fs18', 28)" class="i">fold</span> <span onmouseout="hideTip(event, 'fs13', 29)" onmouseover="showTip(event, 'fs13', 29)" class="i">apply</span> <span onmouseout="hideTip(event, 'fs19', 30)" onmouseover="showTip(event, 'fs19', 30)" class="i">State</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs20', 31)" onmouseover="showTip(event, 'fs20', 31)" class="i">empty</span> <span onmouseout="hideTip(event, 'fs16', 32)" onmouseover="showTip(event, 'fs16', 32)" class="i">events</span></pre>
-</td>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs15', 25)" onmouseover="showTip(event, 'fs15', 25)" class="f">replay</span> <span onmouseout="hideTip(event, 'fs16', 26)" onmouseover="showTip(event, 'fs16', 26)" class="i">events</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs17', 27)" onmouseover="showTip(event, 'fs17', 27)" class="t">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs18', 28)" onmouseover="showTip(event, 'fs18', 28)" class="f">fold</span> <span onmouseout="hideTip(event, 'fs13', 29)" onmouseover="showTip(event, 'fs13', 29)" class="f">apply</span> <span onmouseout="hideTip(event, 'fs19', 30)" onmouseover="showTip(event, 'fs19', 30)" class="t">State</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs20', 31)" onmouseover="showTip(event, 'fs20', 31)" class="i">empty</span> <span onmouseout="hideTip(event, 'fs16', 32)" onmouseover="showTip(event, 'fs16', 32)" class="i">events</span>
+</code></pre></td>
 </tr>
 </table>
-
 <h2>F#</h2>
-
 <p>So I started to try implementing <a href="https://github.com/gregoryyoung/m-r">Greg's SimpleCQRS</a> sample <a href="https://github.com/thinkbeforecoding/m-r">in F#</a>
 and could see that much of the pain went away, even if I was still a noob in F#.</p>
-
 <p>A central aspect of F# is that it has a type system that eerily seems almost purpose-built for DDD.
-Have a look at Scott Wlaschin's presentation on <a href="http://fr.slideshare.net/ScottWlaschin/ddd-with-fsharptypesystemlondonndc2013">DDD with F#</a> 
+Have a look at Scott Wlaschin's presentation on <a href="http://fr.slideshare.net/ScottWlaschin/ddd-with-fsharptypesystemlondonndc2013">DDD with F#</a>
 and <a href="http://fsharpforfunandprofit.com/posts/designing-with-types-more-semantic-types/#series-toc">the associated series on his blog</a>.</p>
-
 <p>Another one is that F# has immutable and <a href="http://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare">Non Null</a> types by default.</p>
-
 <p>It also has a <a href="http://martinfowler.com/books/dsl.html">DSL</a>ly feeling due to the low noise -- no curlies - and currying.</p>
-
 <p>It's also a language that can be put into production on many platforms thanks to Xamarin.</p>
-
 <p>All this combined together makes it a good way to implement Event Sourcing. It's robust, clean and fast.
 It's also a great way to teach Event Sourcing, even to people who don't speak F#.</p>
-
 <p>I've done several presentations in F# in front of Java people - <em>"You don't
 talk C# and I don't talk Java, let's do this in F# !"</em> - and it was totally ok.</p>
-
 <p>This being said, most of the things here can be applied outside of F# with possibly
 minor adjustments. If you find any, let's chat, and I can talk about it here.</p>
 
@@ -210,7 +160,7 @@ minor adjustments. If you find any, let's chat, and I can talk about it here.</p
 <div class="tip" id="fs14">val event : Event</div>
 <div class="tip" id="fs15">val replay : events:Event list -&gt; State<br /><br />Full name: Why FSharp.replay</div>
 <div class="tip" id="fs16">val events : Event list</div>
-<div class="tip" id="fs17">Multiple items<br />module List<br /><br />from Microsoft.FSharp.Collections<br /><br />--------------------<br />type List&lt;&#39;T&gt; =<br />&#160;&#160;| ( [] )<br />&#160;&#160;| ( :: ) of Head: &#39;T * Tail: &#39;T list<br />&#160;&#160;interface IEnumerable<br />&#160;&#160;interface IEnumerable&lt;&#39;T&gt;<br />&#160;&#160;member Head : &#39;T<br />&#160;&#160;member IsEmpty : bool<br />&#160;&#160;member Item : index:int -&gt; &#39;T with get<br />&#160;&#160;member Length : int<br />&#160;&#160;member Tail : &#39;T list<br />&#160;&#160;static member Cons : head:&#39;T * tail:&#39;T list -&gt; &#39;T list<br />&#160;&#160;static member Empty : &#39;T list<br /><br />Full name: Microsoft.FSharp.Collections.List&lt;_&gt;</div>
+<div class="tip" id="fs17">Multiple items<br />module List<br /><br />from Microsoft.FSharp.Collections<br /><br />--------------------<br />type List&lt;&#39;T&gt; =<br />&#160;&#160;| ( [] )<br />&#160;&#160;| ( :: ) of Head: &#39;T * Tail: &#39;T list<br />&#160;&#160;interface IEnumerable<br />&#160;&#160;interface IEnumerable&lt;&#39;T&gt;<br />&#160;&#160;member GetSlice : startIndex:int option * endIndex:int option -&gt; &#39;T list<br />&#160;&#160;member Head : &#39;T<br />&#160;&#160;member IsEmpty : bool<br />&#160;&#160;member Item : index:int -&gt; &#39;T with get<br />&#160;&#160;member Length : int<br />&#160;&#160;member Tail : &#39;T list<br />&#160;&#160;static member Cons : head:&#39;T * tail:&#39;T list -&gt; &#39;T list<br />&#160;&#160;static member Empty : &#39;T list<br /><br />Full name: Microsoft.FSharp.Collections.List&lt;_&gt;</div>
 <div class="tip" id="fs18">val fold : folder:(&#39;State -&gt; &#39;T -&gt; &#39;State) -&gt; state:&#39;State -&gt; list:&#39;T list -&gt; &#39;State<br /><br />Full name: Microsoft.FSharp.Collections.List.fold</div>
 <div class="tip" id="fs19">type State =<br />&#160;&#160;{MyCurrentState: string;}<br />&#160;&#160;static member empty : State<br /><br />Full name: Why FSharp.State</div>
 <div class="tip" id="fs20">property State.empty: State</div>

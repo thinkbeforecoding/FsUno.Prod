@@ -38,43 +38,27 @@
       <div class="row">
         <div class="span9" id="main">
           <h1>Designing Aggregates, Algebra</h1>
-
 <p>This evening, I start to feel that things won't move much as long as I have only one Aggregate.</p>
-
 <p>With several Aggregates we'll have to add Process and Process Managers to orchestrate the
 reactions to events, and ensure the global consistency of the system.</p>
-
 <p>We'll also have to manage projections over several aggregates. And make the infrastructure code
 a bit more generic to not wire it directly to the only aggregate.</p>
-
 <p>But before this happens: Design !</p>
-
 <h2>The Game Aggregate</h2>
-
 <p>This one is already partly implemented and represents the enforcement of rules on the discard pile.</p>
-
 <hr />
-
 <p>A discussion on Jabbr with <a href="https://twitter.com/@rbartelink">@rbartelink</a> interrupted me in the
 process for something awesome !</p>
-
 <h2>Algebra</h2>
-
 <p>The first question was whether to change the <code>empty</code> member and make it a <code>static member</code>, ditto the <code>apply</code> function.</p>
-
 <p>The second was whether to try to hide <code>empty</code> and <code>apply</code> completly in a <code>replay</code> function.</p>
-
 <p><code>empty</code> as a static member feels quite natural, but I had a problem with <code>apply</code>. Its signature
 seems to validate this change, but putting it before <code>handle</code> seems wrong.</p>
-
 <p>The problem is that when reading an Aggregate, the first important thing is the decision
 in the <code>handle</code> method, and changes in <code>apply</code> are always implemented later. Changing
 this would break the flow.</p>
-
 <p>But it's possible to implement it further in F# with a type extension:</p>
-
-<table class="pre"><tr><td class="lines"><pre class="fssnip">
-<span class="l"> 1: </span>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l"> 1: </span>
 <span class="l"> 2: </span>
 <span class="l"> 3: </span>
 <span class="l"> 4: </span>
@@ -85,150 +69,108 @@ this would break the flow.</p>
 <span class="l"> 9: </span>
 <span class="l">10: </span>
 <span class="l">11: </span>
-</pre>
-</td>
-<td class="snippet"><pre class="fssnip">
-    <span class="k">type</span> <span onmouseout="hideTip(event, 'fs5', 5)" onmouseover="showTip(event, 'fs5', 5)" class="i">State</span> <span class="o">=</span> { <span onmouseout="hideTip(event, 'fs6', 6)" onmouseover="showTip(event, 'fs6', 6)" class="i">CurrentState</span><span class="o">:</span> <span onmouseout="hideTip(event, 'fs7', 7)" onmouseover="showTip(event, 'fs7', 7)" class="i">string</span> }
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp">    <span class="k">type</span> <span onmouseout="hideTip(event, 'fs5', 5)" onmouseover="showTip(event, 'fs5', 5)" class="t">State</span> <span class="o">=</span> { <span onmouseout="hideTip(event, 'fs6', 6)" onmouseover="showTip(event, 'fs6', 6)" class="i">CurrentState</span><span class="o">:</span> <span onmouseout="hideTip(event, 'fs7', 7)" onmouseover="showTip(event, 'fs7', 7)" class="t">string</span> }
         <span class="k">with</span>
-        <span class="k">static</span> <span class="k">member</span> <span onmouseout="hideTip(event, 'fs8', 8)" onmouseover="showTip(event, 'fs8', 8)" class="i">empty</span> <span class="o">=</span> { <span class="i">CurrentState</span> <span class="o">=</span> <span class="s">&quot;</span><span class="s">&quot;</span> }
+        <span class="k">static</span> <span class="k">member</span> <span onmouseout="hideTip(event, 'fs8', 8)" onmouseover="showTip(event, 'fs8', 8)" class="i">empty</span> <span class="o">=</span> { <span class="i">CurrentState</span> <span class="o">=</span> <span class="s">&quot;&quot;</span> }
 
-    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs9', 9)" onmouseover="showTip(event, 'fs9', 9)" class="i">handle</span> <span onmouseout="hideTip(event, 'fs10', 10)" onmouseover="showTip(event, 'fs10', 10)" class="i">command</span> <span onmouseout="hideTip(event, 'fs11', 11)" onmouseover="showTip(event, 'fs11', 11)" class="i">state</span> <span class="o">=</span>
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs9', 9)" onmouseover="showTip(event, 'fs9', 9)" class="f">handle</span> <span onmouseout="hideTip(event, 'fs10', 10)" onmouseover="showTip(event, 'fs10', 10)" class="i">command</span> <span onmouseout="hideTip(event, 'fs11', 11)" onmouseover="showTip(event, 'fs11', 11)" class="i">state</span> <span class="o">=</span>
         <span class="c">/// ...</span>
-        [ <span onmouseout="hideTip(event, 'fs3', 12)" onmouseover="showTip(event, 'fs3', 12)" class="i">SomethingHappened</span> ]
+        [ <span onmouseout="hideTip(event, 'fs3', 12)" onmouseover="showTip(event, 'fs3', 12)" class="p">SomethingHappened</span> ]
 
-    <span class="k">type</span> <span onmouseout="hideTip(event, 'fs5', 13)" onmouseover="showTip(event, 'fs5', 13)" class="i">State</span> <span class="k">with</span>
-        <span class="k">static</span> <span class="k">member</span> <span onmouseout="hideTip(event, 'fs12', 14)" onmouseover="showTip(event, 'fs12', 14)" class="i">apply</span> <span onmouseout="hideTip(event, 'fs13', 15)" onmouseover="showTip(event, 'fs13', 15)" class="i">state</span> <span class="o">=</span> <span class="k">function</span>
-            | <span onmouseout="hideTip(event, 'fs3', 16)" onmouseover="showTip(event, 'fs3', 16)" class="i">SomethingHappened</span> <span class="k">-&gt;</span> { <span onmouseout="hideTip(event, 'fs13', 17)" onmouseover="showTip(event, 'fs13', 17)" class="i">state</span> <span class="k">with</span> <span class="i">CurrentState</span> <span class="o">=</span> <span class="s">&quot;</span><span class="s">new</span><span class="s"> </span><span class="s">state</span><span class="s">&quot;</span> }</pre>
-</td>
+    <span class="k">type</span> <span onmouseout="hideTip(event, 'fs5', 13)" onmouseover="showTip(event, 'fs5', 13)" class="t">State</span> <span class="k">with</span>
+        <span class="k">static</span> <span class="k">member</span> <span onmouseout="hideTip(event, 'fs12', 14)" onmouseover="showTip(event, 'fs12', 14)" class="f">apply</span> <span onmouseout="hideTip(event, 'fs13', 15)" onmouseover="showTip(event, 'fs13', 15)" class="i">state</span> <span class="o">=</span> <span class="k">function</span>
+            | <span onmouseout="hideTip(event, 'fs3', 16)" onmouseover="showTip(event, 'fs3', 16)" class="p">SomethingHappened</span> <span class="k">-&gt;</span> { <span onmouseout="hideTip(event, 'fs13', 17)" onmouseover="showTip(event, 'fs13', 17)" class="i">state</span> <span class="k">with</span> <span class="i">CurrentState</span> <span class="o">=</span> <span class="s">&quot;new state&quot;</span> }
+</code></pre></td>
 </tr>
 </table>
-
 <p>The second question started with this sample code:</p>
-
-<table class="pre"><tr><td class="lines"><pre class="fssnip">
-<span class="l">1: </span>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
 <span class="l">2: </span>
-</pre>
-</td>
-<td class="snippet"><pre class="fssnip">
-        <span class="k">static</span> <span class="k">member</span> <span onmouseout="hideTip(event, 'fs14', 18)" onmouseover="showTip(event, 'fs14', 18)" class="i">build</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs15', 19)" onmouseover="showTip(event, 'fs15', 19)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs16', 20)" onmouseover="showTip(event, 'fs16', 20)" class="i">fold</span> <span onmouseout="hideTip(event, 'fs5', 21)" onmouseover="showTip(event, 'fs5', 21)" class="i">State</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs17', 22)" onmouseover="showTip(event, 'fs17', 22)" class="i">apply</span>  
-        <span class="k">static</span> <span class="k">member</span> <span onmouseout="hideTip(event, 'fs18', 23)" onmouseover="showTip(event, 'fs18', 23)" class="i">replay</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs5', 24)" onmouseover="showTip(event, 'fs5', 24)" class="i">State</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs19', 25)" onmouseover="showTip(event, 'fs19', 25)" class="i">build</span> <span onmouseout="hideTip(event, 'fs5', 26)" onmouseover="showTip(event, 'fs5', 26)" class="i">State</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs20', 27)" onmouseover="showTip(event, 'fs20', 27)" class="i">empty</span> </pre>
-</td>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp">        <span class="k">static</span> <span class="k">member</span> <span onmouseout="hideTip(event, 'fs14', 18)" onmouseover="showTip(event, 'fs14', 18)" class="i">build</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs15', 19)" onmouseover="showTip(event, 'fs15', 19)" class="t">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs16', 20)" onmouseover="showTip(event, 'fs16', 20)" class="f">fold</span> <span onmouseout="hideTip(event, 'fs5', 21)" onmouseover="showTip(event, 'fs5', 21)" class="t">State</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs17', 22)" onmouseover="showTip(event, 'fs17', 22)" class="f">apply</span>  
+        <span class="k">static</span> <span class="k">member</span> <span onmouseout="hideTip(event, 'fs18', 23)" onmouseover="showTip(event, 'fs18', 23)" class="i">replay</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs5', 24)" onmouseover="showTip(event, 'fs5', 24)" class="t">State</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs19', 25)" onmouseover="showTip(event, 'fs19', 25)" class="f">build</span> <span onmouseout="hideTip(event, 'fs5', 26)" onmouseover="showTip(event, 'fs5', 26)" class="t">State</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs20', 27)" onmouseover="showTip(event, 'fs20', 27)" class="i">empty</span> 
+</code></pre></td>
 </tr>
 </table>
-
 <p>It would be possible to write this but it's not part of the Aggregate, let's see why.</p>
-
 <h3>Monoids</h3>
-
 <p>Do you remember how a <a href="http://en.wikipedia.org/wiki/Monoid">Monoid</a> is defined ?</p>
-
 <p>A monoid is a triple (S,+,n) where</p>
-
 <ul>
 <li><code>S</code> is a set</li>
-<li><code>+</code> is closed on the set (the signature would be S -> S -> S)</li>
+<li><code>+</code> is closed on the set (the signature would be S -&gt; S -&gt; S)</li>
 <li><code>+</code> is associative ( x + y + z = (x + y) + z = x + (y + z) )</li>
 <li><code>n</code> is the <a href="http://en.wikipedia.org/wiki/Identity_element">neutral(aka identity)</a> element ( x + n = n + x = x)</li>
 </ul>
-
 <p>Most of mathematical structures are defined using sets (here <code>S</code>), functions (here <code>+</code>) and specific set items
 (here <code>n</code>).</p>
-
 <h3>Aggregates</h3>
-
 <p>Aggregates are not monoids, but you can see that it could be defined using the same
 kind of primary element:</p>
-
 <p>A quadruple (State, handle, apply, empty) with the rules and signatures you know. <code>handle</code> and <code>apply</code>
 are not closed on the set but the composition is not bad.</p>
-
 <p>If we alias <code>apply</code> as <code>+</code> we can write:</p>
-
-<table class="pre"><tr><td class="lines"><pre class="fssnip">
-<span class="l">1: </span>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
 <span class="l">2: </span>
 <span class="l">3: </span>
-</pre>
-</td>
-<td class="snippet"><pre class="fssnip">
-    <span class="k">let</span> (<span class="o">+</span>) <span class="o">=</span> <span onmouseout="hideTip(event, 'fs5', 28)" onmouseover="showTip(event, 'fs5', 28)" class="i">State</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs17', 29)" onmouseover="showTip(event, 'fs17', 29)" class="i">apply</span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp">    <span class="k">let</span> (<span class="o">+</span>) <span class="o">=</span> <span onmouseout="hideTip(event, 'fs5', 28)" onmouseover="showTip(event, 'fs5', 28)" class="t">State</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs17', 29)" onmouseover="showTip(event, 'fs17', 29)" class="f">apply</span>
 
-    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs21', 30)" onmouseover="showTip(event, 'fs21', 30)" class="i">finalState</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs5', 31)" onmouseover="showTip(event, 'fs5', 31)" class="i">State</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs20', 32)" onmouseover="showTip(event, 'fs20', 32)" class="i">empty</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs3', 33)" onmouseover="showTip(event, 'fs3', 33)" class="i">SomethingHappened</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs3', 34)" onmouseover="showTip(event, 'fs3', 34)" class="i">SomethingHappened</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs3', 35)" onmouseover="showTip(event, 'fs3', 35)" class="i">SomethingHappened</span></pre>
-</td>
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs21', 30)" onmouseover="showTip(event, 'fs21', 30)" class="i">finalState</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs5', 31)" onmouseover="showTip(event, 'fs5', 31)" class="t">State</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs20', 32)" onmouseover="showTip(event, 'fs20', 32)" class="i">empty</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs3', 33)" onmouseover="showTip(event, 'fs3', 33)" class="p">SomethingHappened</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs3', 34)" onmouseover="showTip(event, 'fs3', 34)" class="p">SomethingHappened</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs3', 35)" onmouseover="showTip(event, 'fs3', 35)" class="p">SomethingHappened</span>
+</code></pre></td>
 </tr>
 </table>
-
 <p>Makes sense, right ?</p>
-
 <p>The only change that I would propose is to change <code>empty</code> to <code>initial</code> because it's the <strong>initial</strong> state:</p>
-
-<table class="pre"><tr><td class="lines"><pre class="fssnip">
-<span class="l">1: </span>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
 <span class="l">2: </span>
 <span class="l">3: </span>
 <span class="l">4: </span>
-</pre>
-</td>
-<td class="snippet"><pre class="fssnip">
-    <span class="k">type</span> <span onmouseout="hideTip(event, 'fs5', 36)" onmouseover="showTip(event, 'fs5', 36)" class="i">State</span> <span class="k">with</span>
-        <span class="k">static</span> <span class="k">member</span> <span onmouseout="hideTip(event, 'fs22', 37)" onmouseover="showTip(event, 'fs22', 37)" class="i">initial</span> <span class="o">=</span> { <span class="i">CurrentState</span> <span class="o">=</span> <span class="s">&quot;</span><span class="s">initial</span><span class="s"> </span><span class="s">state</span><span class="s">&quot;</span>}
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp">    <span class="k">type</span> <span onmouseout="hideTip(event, 'fs5', 36)" onmouseover="showTip(event, 'fs5', 36)" class="t">State</span> <span class="k">with</span>
+        <span class="k">static</span> <span class="k">member</span> <span onmouseout="hideTip(event, 'fs22', 37)" onmouseover="showTip(event, 'fs22', 37)" class="i">initial</span> <span class="o">=</span> { <span class="i">CurrentState</span> <span class="o">=</span> <span class="s">&quot;initial state&quot;</span>}
 
-    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs23', 38)" onmouseover="showTip(event, 'fs23', 38)" class="i">finalState&#39;</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs5', 39)" onmouseover="showTip(event, 'fs5', 39)" class="i">State</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs24', 40)" onmouseover="showTip(event, 'fs24', 40)" class="i">initial</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs3', 41)" onmouseover="showTip(event, 'fs3', 41)" class="i">SomethingHappened</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs3', 42)" onmouseover="showTip(event, 'fs3', 42)" class="i">SomethingHappened</span></pre>
-</td>
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs23', 38)" onmouseover="showTip(event, 'fs23', 38)" class="i">finalState&#39;</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs5', 39)" onmouseover="showTip(event, 'fs5', 39)" class="t">State</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs24', 40)" onmouseover="showTip(event, 'fs24', 40)" class="i">initial</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs3', 41)" onmouseover="showTip(event, 'fs3', 41)" class="p">SomethingHappened</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs3', 42)" onmouseover="showTip(event, 'fs3', 42)" class="p">SomethingHappened</span>
+</code></pre></td>
 </tr>
 </table>
-
 <p>Hiding <code>apply</code> and <code>initial</code> would seriously reduce the composability of all this.</p>
-
 <h3>Higher order functions</h3>
-
 <p><code>replay</code> can actually be seen as a high order function built using <code>initial</code> and <code>apply</code>.
-To build it directly from the <code>State</code> type we can use 
+To build it directly from the <code>State</code> type we can use
 <a href="http://msdn.microsoft.com/en-us/library/dd548046.aspx">statically resolved type parameters</a>,
 you can hover over the <code>replay</code> definition below to see the type constraints:</p>
-
-<table class="pre"><tr><td class="lines"><pre class="fssnip">
-<span class="l">1: </span>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
 <span class="l">2: </span>
 <span class="l">3: </span>
 <span class="l">4: </span>
-</pre>
-</td>
-<td class="snippet"><pre class="fssnip">
-    <span class="k">let</span> <span class="k">inline</span> <span onmouseout="hideTip(event, 'fs25', 43)" onmouseover="showTip(event, 'fs25', 43)" class="i">replay</span> <span onmouseout="hideTip(event, 'fs26', 44)" onmouseover="showTip(event, 'fs26', 44)" class="i">events</span> <span class="o">=</span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp">    <span class="k">let</span> <span class="k">inline</span> <span onmouseout="hideTip(event, 'fs25', 43)" onmouseover="showTip(event, 'fs25', 43)" class="f">replay</span> <span onmouseout="hideTip(event, 'fs26', 44)" onmouseover="showTip(event, 'fs26', 44)" class="i">events</span> <span class="o">=</span>
         <span class="k">let</span> <span onmouseout="hideTip(event, 'fs27', 45)" onmouseover="showTip(event, 'fs27', 45)" class="i">initial</span> <span class="o">=</span> (<span class="o">^</span><span class="i">S</span><span class="o">:</span> (<span class="k">static</span> <span class="k">member</span> <span onmouseout="hideTip(event, 'fs27', 46)" onmouseover="showTip(event, 'fs27', 46)" class="i">initial</span><span class="o">:</span> <span class="o">^</span><span class="i">S</span>) ()) 
-        <span class="k">let</span> <span onmouseout="hideTip(event, 'fs28', 47)" onmouseover="showTip(event, 'fs28', 47)" class="i">apply</span> <span onmouseout="hideTip(event, 'fs29', 48)" onmouseover="showTip(event, 'fs29', 48)" class="i">s</span> <span class="o">=</span> (<span class="o">^</span><span class="i">S</span><span class="o">:</span> (<span class="k">static</span> <span class="k">member</span> <span class="i">apply</span><span class="o">:</span> <span class="o">^</span><span class="i">S</span> <span class="k">-&gt;</span> (<span class="o">^</span><span class="i">E</span> <span class="k">-&gt;</span> <span class="o">^</span><span class="i">S</span>)) <span onmouseout="hideTip(event, 'fs29', 49)" onmouseover="showTip(event, 'fs29', 49)" class="i">s</span>)
-        <span onmouseout="hideTip(event, 'fs15', 50)" onmouseover="showTip(event, 'fs15', 50)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs16', 51)" onmouseover="showTip(event, 'fs16', 51)" class="i">fold</span> <span onmouseout="hideTip(event, 'fs28', 52)" onmouseover="showTip(event, 'fs28', 52)" class="i">apply</span> <span onmouseout="hideTip(event, 'fs27', 53)" onmouseover="showTip(event, 'fs27', 53)" class="i">initial</span> <span onmouseout="hideTip(event, 'fs26', 54)" onmouseover="showTip(event, 'fs26', 54)" class="i">events</span></pre>
-</td>
+        <span class="k">let</span> <span onmouseout="hideTip(event, 'fs28', 47)" onmouseover="showTip(event, 'fs28', 47)" class="f">apply</span> <span onmouseout="hideTip(event, 'fs29', 48)" onmouseover="showTip(event, 'fs29', 48)" class="i">s</span> <span class="o">=</span> (<span class="o">^</span><span class="i">S</span><span class="o">:</span> (<span class="k">static</span> <span class="k">member</span> <span class="i">apply</span><span class="o">:</span> <span class="o">^</span><span class="i">S</span> <span class="k">-&gt;</span> (<span class="o">^</span><span class="i">E</span> <span class="k">-&gt;</span> <span class="o">^</span><span class="i">S</span>)) <span onmouseout="hideTip(event, 'fs29', 49)" onmouseover="showTip(event, 'fs29', 49)" class="i">s</span>)
+        <span onmouseout="hideTip(event, 'fs15', 50)" onmouseover="showTip(event, 'fs15', 50)" class="t">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs16', 51)" onmouseover="showTip(event, 'fs16', 51)" class="f">fold</span> <span onmouseout="hideTip(event, 'fs28', 52)" onmouseover="showTip(event, 'fs28', 52)" class="f">apply</span> <span onmouseout="hideTip(event, 'fs27', 53)" onmouseover="showTip(event, 'fs27', 53)" class="i">initial</span> <span onmouseout="hideTip(event, 'fs26', 54)" onmouseover="showTip(event, 'fs26', 54)" class="i">events</span>
+</code></pre></td>
 </tr>
 </table>
-
 <p>Ok, it's a bit more complicated but you can check the signature by hovering the function, and
 it can be used on any type that has <code>initial</code> and <code>apply</code> members that adhere to the expected signature.
 And the inference still works from the return type, so any hint to the compiler indicating
 the specific Aggregate <code>State</code> type in use means there is no need for further type annotations.</p>
-
-<table class="pre"><tr><td class="lines"><pre class="fssnip">
-<span class="l">1: </span>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
 <span class="l">2: </span>
 <span class="l">3: </span>
-</pre>
-</td>
-<td class="snippet"><pre class="fssnip">
-    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs30', 55)" onmouseover="showTip(event, 'fs30', 55)" class="i">state</span> <span class="o">:</span> <span onmouseout="hideTip(event, 'fs5', 56)" onmouseover="showTip(event, 'fs5', 56)" class="i">State</span> <span class="o">=</span>
-        [ <span onmouseout="hideTip(event, 'fs3', 57)" onmouseover="showTip(event, 'fs3', 57)" class="i">SomethingHappened</span>; <span onmouseout="hideTip(event, 'fs3', 58)" onmouseover="showTip(event, 'fs3', 58)" class="i">SomethingHappened</span>]
-        <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs25', 59)" onmouseover="showTip(event, 'fs25', 59)" class="i">replay</span></pre>
-</td>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp">    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs30', 55)" onmouseover="showTip(event, 'fs30', 55)" class="i">state</span> <span class="o">:</span> <span onmouseout="hideTip(event, 'fs5', 56)" onmouseover="showTip(event, 'fs5', 56)" class="t">State</span> <span class="o">=</span>
+        [ <span onmouseout="hideTip(event, 'fs3', 57)" onmouseover="showTip(event, 'fs3', 57)" class="p">SomethingHappened</span>; <span onmouseout="hideTip(event, 'fs3', 58)" onmouseover="showTip(event, 'fs3', 58)" class="p">SomethingHappened</span>]
+        <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs25', 59)" onmouseover="showTip(event, 'fs25', 59)" class="f">replay</span>
+</code></pre></td>
 </tr>
 </table>
-
 <p>So where are we now ?
 Better vocabulary with <code>initial</code>, better understanding about the Aggregate <em>algebra</em>, and
 a high order function to use it.</p>
-
 <p>Now we can see how we'll implement more generic command handlers.</p>
-
 <p>Good evening !</p>
 
           <div class="tip" id="fs1">union case Command.DoSomething: Command</div>
@@ -245,7 +187,7 @@ a high order function to use it.</p>
 <div class="tip" id="fs12">static member State.apply : state:State -&gt; (Event -&gt; State)<br /><br />Full name: Designing Aggregates.FirstAttempt.State.apply</div>
 <div class="tip" id="fs13">val state : State</div>
 <div class="tip" id="fs14">static member State.build : (State -&gt; Event list -&gt; State)<br /><br />Full name: Designing Aggregates.FirstAttempt.State.build</div>
-<div class="tip" id="fs15">Multiple items<br />module List<br /><br />from Microsoft.FSharp.Collections<br /><br />--------------------<br />type List&lt;&#39;T&gt; =<br />&#160;&#160;| ( [] )<br />&#160;&#160;| ( :: ) of Head: &#39;T * Tail: &#39;T list<br />&#160;&#160;interface IEnumerable<br />&#160;&#160;interface IEnumerable&lt;&#39;T&gt;<br />&#160;&#160;member Head : &#39;T<br />&#160;&#160;member IsEmpty : bool<br />&#160;&#160;member Item : index:int -&gt; &#39;T with get<br />&#160;&#160;member Length : int<br />&#160;&#160;member Tail : &#39;T list<br />&#160;&#160;static member Cons : head:&#39;T * tail:&#39;T list -&gt; &#39;T list<br />&#160;&#160;static member Empty : &#39;T list<br /><br />Full name: Microsoft.FSharp.Collections.List&lt;_&gt;</div>
+<div class="tip" id="fs15">Multiple items<br />module List<br /><br />from Microsoft.FSharp.Collections<br /><br />--------------------<br />type List&lt;&#39;T&gt; =<br />&#160;&#160;| ( [] )<br />&#160;&#160;| ( :: ) of Head: &#39;T * Tail: &#39;T list<br />&#160;&#160;interface IEnumerable<br />&#160;&#160;interface IEnumerable&lt;&#39;T&gt;<br />&#160;&#160;member GetSlice : startIndex:int option * endIndex:int option -&gt; &#39;T list<br />&#160;&#160;member Head : &#39;T<br />&#160;&#160;member IsEmpty : bool<br />&#160;&#160;member Item : index:int -&gt; &#39;T with get<br />&#160;&#160;member Length : int<br />&#160;&#160;member Tail : &#39;T list<br />&#160;&#160;static member Cons : head:&#39;T * tail:&#39;T list -&gt; &#39;T list<br />&#160;&#160;static member Empty : &#39;T list<br /><br />Full name: Microsoft.FSharp.Collections.List&lt;_&gt;</div>
 <div class="tip" id="fs16">val fold : folder:(&#39;State -&gt; &#39;T -&gt; &#39;State) -&gt; state:&#39;State -&gt; list:&#39;T list -&gt; &#39;State<br /><br />Full name: Microsoft.FSharp.Collections.List.fold</div>
 <div class="tip" id="fs17">static member State.apply : state:State -&gt; (Event -&gt; State)</div>
 <div class="tip" id="fs18">static member State.replay : (Event list -&gt; State)<br /><br />Full name: Designing Aggregates.FirstAttempt.State.replay</div>
