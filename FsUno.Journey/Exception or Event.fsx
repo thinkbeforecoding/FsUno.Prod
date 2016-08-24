@@ -1,4 +1,6 @@
 ﻿(**
+*2014-09-23*
+
 # Exception or Event ?
 
 In the original FsUno code, I raised exceptions when the player played a wrong card, or played out of turn. I switched from exceptions to events in FsUno.Prod.

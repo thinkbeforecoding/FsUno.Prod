@@ -1,4 +1,6 @@
 ﻿(**
+*2014-08-11*
+
 # Designing Aggregates, Algebra
 
 This evening, I start to feel that things won't move much as long as I have only one Aggregate.

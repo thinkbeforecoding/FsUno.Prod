@@ -1,6 +1,7 @@
 ﻿(**
+*2014-09-09*
+
 # More Algebra
-*2014-09-05*
 
 After a short one week vacation, getting back to FsUno was a bit difficult with work and kids back to school. Today, I'm stuck in bed with a flu, giving me some time to write a bit.
 

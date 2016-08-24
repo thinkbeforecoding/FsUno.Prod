@@ -6,6 +6,8 @@ is already clear and defined by precise rules.
 I don't want to bloat the journey with questioning what the business is.
 Study [EventStorming](http://ziobrando.blogspot.fr/2013/11/introducing-event-storming.html#.U-dALerlrX4) for that.*
 
+*2014-08-10*
+
 ## Choosing a sample domain
 
 Choosing a sample domain is not a simple thing. I've made several attempts

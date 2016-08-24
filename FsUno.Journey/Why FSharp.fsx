@@ -4,6 +4,8 @@
 *tldr; I wanted to implement Functional Event Sourcing, and needed a functional language for this.*
 *F#'s DSL oriented syntax proved useful on the way.*
 
+*2014-08-10*
+
 ## Event Sourcing
 
 Back in 2008, this thing called event sourcing started to draw my attention as
