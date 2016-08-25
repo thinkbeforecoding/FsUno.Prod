@@ -3,12 +3,12 @@
   <head>
     <meta charset="utf-8">
     <!-- 
-      The Functional Event Sourcing: The journey
+      The Evolve vs Apply
  parameters will be replaced with the 
       document title extracted from the <h1> element or
       file name, if there is no <h1> heading
     -->
-    <title>Functional Event Sourcing: The journey
+    <title>Evolve vs Apply
 </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="FsUno.Prod">
@@ -37,44 +37,19 @@
       <hr />
       <div class="row">
         <div class="span9" id="main">
-          <h1>Functional Event Sourcing: The journey</h1>
-<p>This is the log of the journey toward building <a href="https://github.com/thinkbeforecoding/FsUno.Prod">FsUno.Prod</a>.</p>
-<p>Because the journey is more important than the destination, I'll write here
-the things that happen along the way, things I stumbled upon, questions about design
-and implementation as well as options.</p>
-<p>The code of the project <a href="https://github.com/thinkbeforecoding/FsUno.Prod">can be found on github</a></p>
-<p>Join the discussion in the <a href="https://jabbr.net/#/rooms/FunctionalEventSourcing">FunctionalEventSourcing room on JabbR</a></p>
-<p>You can find the table of contents on the right.</p>
-<h2>Log entries</h2>
-<h3>2016-08-25</h3>
-<ul>
-<li><a href="Evolve vs Apply.html">Evolve vs Apply</a></li>
-</ul>
-<h3>2016-08-25</h3>
-<ul>
-<li><a href="About Streams Lifetime.html">About Streams Lifetime</a></li>
-</ul>
-<h3>2016-08-24</h3>
-<ul>
-<li><a href="The Digit type.html">The Digit type</a></li>
-</ul>
-<h3>2014-09-23</h3>
-<ul>
-<li><a href="Exception or Event.html">Exception or Event</a></li>
-</ul>
-<h3>2014-09-09</h3>
-<ul>
-<li><a href="Dynamical Systems.html">Dynamical Systems</a></li>
-</ul>
-<h3>2014-08-11</h3>
-<ul>
-<li><a href="Designing Aggregates.html">Designing Aggregates</a></li>
-</ul>
-<h3>2014-08-10</h3>
-<ul>
-<li><a href="Why Uno.html">Why Uno</a></li>
-<li><a href="Why FSharp.html">Why F#</a></li>
-</ul>
+          <h1>Evolve vs Apply</h1>
+<p><em>2016-08-25</em></p>
+<p>I definitly changed the name of the <code>apply</code> function to <code>evolve</code>.</p>
+<p>The name <code>apply</code> carries to much mutability semantic, and is to much associated with replay.</p>
+<p>I also renamed <code>replay</code> to <code>fold</code> for the same reason.</p>
+<p>People tend to get scared of Event Sourcing because of this replay thing... I often hear</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="i">Will</span> <span class="i">side</span> <span class="i">effects</span> <span class="i">happen</span> <span class="i">again</span> <span class="o">?</span>
+</code></pre></td>
+</tr>
+</table>
+<p>Using <code>fold</code> let people see it as side effects free. It's just a simple computation.</p>
 
                     
         </div>
