@@ -16,6 +16,9 @@ You can find the table of contents on the right.
 ## Log entries
 
 ### 2016-08-25
+* [Evolve vs Apply](Evolve vs Apply.html)
+
+### 2016-08-25
 * [About Streams Lifetime](About Streams Lifetime.html)
 
 ### 2016-08-24

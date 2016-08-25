@@ -10,9 +10,7 @@ open FsUno.Domain
 
 open System
 open System.Reflection
-open System.IO
 open Newtonsoft.Json
-open Newtonsoft.Json.Linq
 open Microsoft.FSharp.Reflection
 
 // Basic reflection for converters
@@ -124,7 +122,7 @@ open Reflection
 // as a record, adding a "_Case" field.
 let unionConverter =
     { new JsonConverter() with
-        member this.WriteJson(w,v,s) =
+        member __.WriteJson(w,v,s) =
             match v with
             | NamedCase name -> w.WriteValue name
             | SingleCase(_, (_,fieldValue)) -> s.Serialize(w,fieldValue)
@@ -132,10 +130,10 @@ let unionConverter =
                 ("_Case", box name) :: fields
                 |> Json.writeObject w s
 
-        member this.ReadJson(r,t,v,s) =
+        member __.ReadJson(r,t,_,s) =
             Json.deserializeUnion r s t (fun r s -> Json.readCaseName r s |> Reflection.getCase t)
 
-        member this.CanConvert t =
+        member __.CanConvert t =
             FSharpType.IsUnion t && not (isList t || isOption t) }
 
 // This converter reads/writes a discriminated union
@@ -143,7 +141,7 @@ let unionConverter =
 // stored in the EventType of the event store.
 let private rootUnionConverter<'a> (case: UnionCaseInfo) =
     { new JsonConverter() with
-        member this.WriteJson(w,v,s) =
+        member __.WriteJson(w,v,s) =
             match v with
             | NamedCase _ -> ()
             | SingleCase(_, (_,value)) -> s.Serialize(w, value)           
@@ -151,21 +149,21 @@ let private rootUnionConverter<'a> (case: UnionCaseInfo) =
                 fields
                 |> Json.writeObject w s
 
-        member this.ReadJson(r,t,v,s) =
+        member __.ReadJson(r,t,_,s) =
             Json.deserializeUnion r s t (fun _ _ -> case)
 
-        member this.CanConvert t =
+        member __.CanConvert t =
             t = typeof<'a> || t.BaseType = typeof<'a> }
 
 // This converter writes options as value or null
 let private optionConverter =
     { new JsonConverter() with
-        member this.WriteJson(w,v,s) = 
+        member __.WriteJson(w,v,s) = 
             match FSharpValue.GetUnionFields(v,v.GetType()) with
             | _, [|v|] -> s.Serialize(w, v)
             | _ -> w.WriteNull()
 
-        member this.ReadJson(r,t,v,s) =
+        member __.ReadJson(r,t,_,s) =
             let optionType =
                 match t.GetGenericArguments() with
                 | [|o|] -> o
@@ -177,7 +175,7 @@ let private optionConverter =
             else
                 FSharpValue.MakeUnion(cases.[1], [| s.Deserialize(r,optionType) |])
                                 
-        member this.CanConvert t = isOption t }
+        member __.CanConvert t = isOption t }
 
 /// Serializes a value type containing a single property
 /// as its inner value. It is used for digit and GameId
@@ -189,11 +187,11 @@ let valueConverter (valueType: Type) =
     let innerType = field.PropertyType
     let ctor = valueType.GetConstructor [| innerType |]
     { new JsonConverter() with
-        member this.WriteJson(w,v,s) =
+        member __.WriteJson(w,v,s) =
             s.Serialize(w, field.GetValue(v))
-        member this.ReadJson(r,t,v,s) =
+        member __.ReadJson(r,_,_,s) =
             ctor.Invoke([| s.Deserialize(r, innerType) |])
-        member this.CanConvert t = t = valueType }
+        member __.CanConvert t = t = valueType }
 
 let converters =
     let valueConverters =

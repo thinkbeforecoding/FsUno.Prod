@@ -56,28 +56,30 @@ type Turn = {
     Player: int
     PlayerCount:int
     Direction:Direction }
-    with
-    static member empty = { Player= 0; PlayerCount = 1; Direction = ClockWise }
-    static member start player count = {Player = player; PlayerCount = count; Direction = ClockWise }
 
-    member turn.next = 
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module Turn =
+    let empty = { Player= 0; PlayerCount = 1; Direction = ClockWise }
+    let start player count = {Player = player; PlayerCount = count; Direction = ClockWise }
+
+    let next turn = 
         match turn.Direction with
         | ClockWise ->  { turn with Player = (turn.Player + 1) % turn.PlayerCount }
         | CounterClockWise -> { turn with Player = (turn.Player + turn.PlayerCount - 1) % turn.PlayerCount } // the + count is here to avoid having negative result
 
-    member turn.skip = turn.next.next
+    let skip = next >> next
 
-    member turn.reverse = 
+    let reverse turn = 
         match turn.Direction with
         | ClockWise -> { turn with Direction = CounterClockWise }
         | CounterClockWise -> { turn with Direction = ClockWise }
 
-    member turn.setPlayer player =
+    let setPlayer player turn =
         if player < 0 || player >= turn.PlayerCount then 
             invalidArg "player" "The player value should be between 0 and player count"
         { turn with Player = player }
 
-    member turn.setDirection direction =
+    let setDirection direction turn =
         { turn with Turn.Direction = direction }
 
 // State
@@ -143,17 +145,17 @@ let playCard (command: PlayCard) = function
               
                 match command.Card with
                 | KickBack _ ->
-                    let nextTurn = state.Turn.reverse.next
+                    let nextTurn = state.Turn |> Turn.reverse |> Turn.next
 
                     [ cardPlayed nextTurn.Player
                       DirectionChanged { GameId = command.GameId
                                          Direction = nextTurn.Direction } ]
                 | Skip _ ->
-                    let nextTurn = state.Turn.skip
+                    let nextTurn = state.Turn |> Turn.skip
 
                     [ cardPlayed nextTurn.Player ]
                 | _ -> 
-                    let nextTurn = state.Turn.next
+                    let nextTurn = state.Turn |> Turn.next
                     [ cardPlayed nextTurn.Player ]
             | _ -> [ PlayerPlayedWrongCard { GameId = command.GameId; Player = command.Player; Card = command.Card} ] 
 
@@ -172,7 +174,7 @@ let gameId = function
 // Applies State changes for events
 
 type State with
-    static member apply state = function
+    static member evolve state = function
         | GameStarted event -> 
             Started { 
               Turn = Turn.start event.FirstPlayer event.PlayerCount 
@@ -182,7 +184,7 @@ type State with
             | Started state ->
                 Started { 
                     state with
-                        Turn = state.Turn.setPlayer event.NextPlayer
+                        Turn = state.Turn |> Turn.setPlayer event.NextPlayer
                         TopCard = event.Card }
             | _ -> invalidOp "Game should be started"
         | DirectionChanged event ->
@@ -190,7 +192,7 @@ type State with
             | Started state ->
                 Started {
                     state with 
-                        Turn = state.Turn.setDirection event.Direction }
+                        Turn = state.Turn |> Turn.setDirection event.Direction }
             | _ -> invalidOp "Game should be started"
         | PlayerPlayedAtWrongTurn _ 
         | PlayerPlayedWrongCard _ -> 

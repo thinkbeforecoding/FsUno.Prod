@@ -6,11 +6,11 @@ open Game
 open PrettyPrint
 open FsUnit.Xunit
 
-// A generic replay function that can be used on any aggregate
-let inline replay events =
+// A generic fold function that can be used on any aggregate
+let inline fold events =
     let initial = (^S: (static member initial: ^S) ()) 
-    let apply s = (^S: (static member apply: ^S -> (^E -> ^S)) s)
-    List.fold apply initial events
+    let evolve s = (^S: (static member evolve: ^S -> (^E -> ^S)) s)
+    List.fold evolve initial events
 
 let Given (events: Event list) = events
 let When (command: Command) events = events, command
@@ -19,7 +19,7 @@ let Expect (expected: Event list) (events, command) =
     printWhen command
     printExpect expected
 
-    replay events
+    fold events
     |> handle command
     |> should equal expected
 
@@ -30,7 +30,7 @@ let ExpectThrows<'Ex> (events, command) =
 
 
     (fun () ->
-        replay events
+        fold events
         |> handle command
         |> ignore)
     |> should throw typeof<'Ex>
