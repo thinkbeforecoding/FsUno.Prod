@@ -1,4 +1,5 @@
-FsUnit.xUnit
 Newtonsoft.Json
-xunit
 FSharp.Core
+group Test
+FsUnit.xUnit
+xunit

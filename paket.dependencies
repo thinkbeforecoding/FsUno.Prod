@@ -1,8 +1,15 @@
-source http://nuget.org/api/v2
-nuget Fake
+source https://api.nuget.org/v3/index.json
 nuget FSharp.Core
 nuget FSharp.Formatting.CommandTool
 nuget EventStore.Client
 nuget Newtonsoft.Json
+
+group Build
+source https://api.nuget.org/v3/index.json
+nuget Fake
+
+group Test 
+source https://api.nuget.org/v3/index.json
 nuget FsUnit.xUnit 
 nuget xunit 
+nuget xunit.runner.console

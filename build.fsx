@@ -1,4 +1,4 @@
-﻿#r "packages/Fake/tools/FakeLib.dll"
+﻿#r "packages/build/Fake/tools/FakeLib.dll"
 #r "System.Xml.Linq"
 
 open System
@@ -6,6 +6,8 @@ open System.Xml.Linq
 open Fake   
 open NuGetHelper
 open Fake.Git
+open Fake.Testing
+
 
 let title = "FsUno.Prod"
 let authors = [ "Jérémie Chassaing" ]
@@ -74,16 +76,29 @@ Target "CleanBuild" <| fun _ ->
     CleanDir "bin\Release"
 
 Target "Build" <| fun _ ->
-    !! "FsUno.Prod.sln"
-    |> MSBuildRelease @"bin\Release" "Build"
+    !! "FSUno/*.fsproj"
+    ++ "FSUno.Domain/*.fsproj"
+    ++ "FsUno.Persistence.EventStore/*.fsproj"
+    |> MSBuildRelease @"bin\Release" "Rebuild"
     |> Log "MsBuild"
+
+
+Target "BuildTests" <| fun _ ->
+    !! "FSUno.Tests/*.fsproj"
+    |> MSBuildRelease @"bin\tests" "Rebuild"
+    |> Log "MsBuild"
+
+Target "Tests" <| fun _ ->
+    !! "bin/tests/*.Tests.dll"
+    |> xUnit2 (fun p -> { p with ToolPath = "packages/test/xunit.runner.console/tools/xunit.console.exe" })
 
 Target "All" DoNothing
 
-"CleanBuild" ==> "Build"
+"CleanBuild" ==> "Build" ==> "BuildTests" ==> "Tests"
 "CleanJourney" ==> "Journey" ==> "ReleaseJourney"
 
-"Build" ==> "All"
+
+"Tests" ==> "All"
 "Journey" ==> "All"
 
 RunTargetOrDefault "All"
