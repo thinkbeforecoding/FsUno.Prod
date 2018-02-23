@@ -14,8 +14,8 @@ let gameId = GameId 1
 let ``Same color should be accepted``() =
     Given [ GameStarted { GameId = gameId; PlayerCount = 4; FirstCard = red Three; FirstPlayer = 0 } 
             CardPlayed { GameId = gameId; Player = 0; Card = red Nine; NextPlayer = 1 } ] 
-    |> When ( PlayCard { GameId = gameId; Player = 1; Card = red Height } )                  
-    |> Expect [ CardPlayed { GameId = gameId; Player = 1; Card = red Height; NextPlayer = 2 } ]
+    |> When ( PlayCard { GameId = gameId; Player = 1; Card = red Eight } )                  
+    |> Expect [ CardPlayed { GameId = gameId; Player = 1; Card = red Eight; NextPlayer = 2 } ]
 
 [<Fact>]
 let ``Same value should be accepted``() =
@@ -28,8 +28,8 @@ let ``Same value should be accepted``() =
 let ``Different value and color should be rejected``() =
     Given [ GameStarted { GameId = gameId; PlayerCount = 4; FirstCard = red Three; FirstPlayer = 0 } 
             CardPlayed { GameId = gameId; Player = 0; Card = red Nine; NextPlayer = 1 } ] 
-    |> When ( PlayCard { GameId = gameId; Player = 1; Card = yellow Height } )                  
-    |> Expect [ PlayerPlayedWrongCard { GameId = gameId; Player = 1; Card = yellow Height}]
+    |> When ( PlayCard { GameId = gameId; Player = 1; Card = yellow Eight } )                  
+    |> Expect [ PlayerPlayedWrongCard { GameId = gameId; Player = 1; Card = yellow Eight}]
 
 [<Fact>]
 let ``Player should play at his turn``() =
@@ -42,7 +42,7 @@ let ``Player should play at his turn``() =
 let ``After a full round it should be player 0 turn``() =
     Given [ GameStarted { GameId = gameId; PlayerCount = 4; FirstCard = red Three; FirstPlayer = 0 } 
             CardPlayed { GameId = gameId; Player = 0; Card = red Nine; NextPlayer = 1 }
-            CardPlayed { GameId = gameId; Player = 1; Card = red Height; NextPlayer = 2 }
+            CardPlayed { GameId = gameId; Player = 1; Card = red Eight; NextPlayer = 2 }
             CardPlayed { GameId = gameId; Player = 2; Card = red Six; NextPlayer = 3 } ]
     |> When ( PlayCard { GameId = gameId; Player = 3; Card = red One} )                
     |> Expect [ CardPlayed { GameId = gameId; Player = 3; Card = red One; NextPlayer = 0 } ]
