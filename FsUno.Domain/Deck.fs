@@ -9,7 +9,7 @@ type Digit =
     | Five
     | Six
     | Seven
-    | Height
+    | Eight
     | Nine
 
 type Color = 
