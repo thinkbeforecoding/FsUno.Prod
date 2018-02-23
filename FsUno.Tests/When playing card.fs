@@ -25,8 +25,8 @@ let ``Same value should be accepted``() =
 [<Fact>]
 let ``Different value and color should be rejected``() =
     Given [ GameStarted { GameId = gameId; PlayerCount = 4; FirstCard = red Three; FirstPlayer = 0 } ]
-    |> When ( PlayCard { GameId = gameId; Player = 0; Card = yellow Height } )
-    |> Expect [ PlayerPlayedWrongCard { GameId = gameId; Player = 0; Card = yellow Height}]
+    |> When ( PlayCard { GameId = gameId; Player = 0; Card = yellow Eight } )
+    |> Expect [ PlayerPlayedWrongCard { GameId = gameId; Player = 0; Card = yellow Eight}]
 
 [<Fact>]
 let ``First player should play at his turn``() =
