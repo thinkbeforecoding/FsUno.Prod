@@ -22,9 +22,9 @@ let main _ =
     
     handle (PlayCard { GameId = gameId; Player = 0; Card = Digit(Three, Blue) })
 
-    handle (PlayCard { GameId = gameId; Player = 1; Card = Digit(Height, Blue) })
+    handle (PlayCard { GameId = gameId; Player = 1; Card = Digit(Eight, Blue) })
     
-    handle (PlayCard { GameId = gameId; Player = 2; Card = Digit(Height, Yellow) })
+    handle (PlayCard { GameId = gameId; Player = 2; Card = Digit(Eight, Yellow) })
     
     handle (PlayCard { GameId = gameId; Player = 3; Card = Digit(Four, Yellow) })
     
