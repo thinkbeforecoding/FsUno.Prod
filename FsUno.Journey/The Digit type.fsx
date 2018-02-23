@@ -125,7 +125,7 @@ type Digit =
     | Five
     | Six
     | Seven
-    | Height
+    | Eight
     | Nine
 (**
 There is a single place where I'll need validation. When parsing it on the boundary, 
@@ -136,7 +136,7 @@ type Result<'t,'e> = Ok of 't | Failure of 'e
 (*** ***)
 let cases = 
     [ Zero; One; Two;   Three;  Four
-      Five; Six; Seven; Height; Nine ]
+      Five; Six; Seven; Eight; Nine ]
     |> List.map (fun d -> sprintf "%A" d, d)
     |> Map.ofList
     
@@ -163,7 +163,7 @@ let score digit =
     | Five   -> 5
     | Six    -> 6
     | Seven  -> 7
-    | Height -> 8
+    | Eight -> 8
     | Nine   -> 9
 (**
 The pattern matching is a total match, so we're sure we missed no case.
