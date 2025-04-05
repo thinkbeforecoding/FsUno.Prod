@@ -1,6 +1,8 @@
 FsUno.Prod : A Functional Event Sourcing Journey
 ================================================
 
+This repository has moved to Codeberg: https://codeberg.org/thinkbeforecoding/FsUno.Prod
+
 This is my attempt to write a more complete version of FsUno that's
 more representative of something one would actually use in a production system.
 
