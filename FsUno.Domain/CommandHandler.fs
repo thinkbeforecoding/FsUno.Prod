@@ -1,5 +1,6 @@
 ﻿module FsUno.Domain.CommandHandlers
 
+open Deck
 open Game
 
 // This version use F# agents (MailboxProcessor) to keep
@@ -14,7 +15,7 @@ module Game =
     let create readStream appendToStream =
 
         // this is the "repository"
-        let streamId gameId = sprintf "Game-%O" gameId 
+        let streamId (GameId gameId) = sprintf "Game-%O" gameId 
         let load gameId =
             let rec fold state version =
                 async {
